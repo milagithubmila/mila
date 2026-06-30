@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מדריך אינטגרציה Paradox ← Crestron Home (CP4-R)</title>
+<style>
+  :root{
+    --bg:#0f1320; --card:#171c2e; --card2:#1f2540; --ink:#e9ecf5; --muted:#a7b0c8;
+    --brand:#4f8cff; --brand2:#22d3a7; --warn:#ffb020; --danger:#ff5d6c; --ok:#22c55e;
+    --line:#2a3150; --code:#0b0e18; --shadow:0 8px 30px rgba(0,0,0,.35);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:linear-gradient(180deg,#0c1020,#0f1320 200px);
+    color:var(--ink); font-family:"Segoe UI","Assistant","Rubik",Arial,sans-serif;
+    line-height:1.8; font-size:17px;
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding:32px 22px 80px}
+  header.hero{
+    background:radial-gradient(1200px 300px at 80% -50%,rgba(79,140,255,.25),transparent),
+               linear-gradient(135deg,#1a2140 0,#171c2e 100%);
+    background-color:var(--card); border:1px solid var(--line);
+    border-radius:20px; padding:38px 34px; box-shadow:var(--shadow); margin-bottom:26px;
+  }
+  .hero h1{margin:0 0 8px; font-size:32px; letter-spacing:.2px}
+  .hero p{margin:0; color:var(--muted); font-size:18px}
+  .badges{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap}
+  .badge{background:var(--card2); border:1px solid var(--line); color:var(--ink);
+    padding:6px 13px; border-radius:999px; font-size:13.5px; font-weight:600}
+  .badge.ok{border-color:rgba(34,197,94,.5); color:#bff7d2}
+  .badge.brand{border-color:rgba(79,140,255,.5); color:#cfe0ff}
+
+  nav.toc{background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 22px; margin-bottom:30px}
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--muted); font-weight:700}
+  nav.toc ol{margin:0; padding-inline-start:22px; columns:2; column-gap:28px}
+  nav.toc a{color:var(--ink); text-decoration:none; border-bottom:1px dashed transparent}
+  nav.toc a:hover{color:var(--brand); border-bottom-color:var(--brand)}
+  nav.toc li{margin:5px 0; break-inside:avoid}
+
+  section{background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px 28px; margin-bottom:22px; box-shadow:var(--shadow)}
+  section h2{margin:0 0 6px; font-size:24px; display:flex; align-items:center; gap:12px}
+  .num{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px;
+    border-radius:11px; background:linear-gradient(135deg,var(--brand),#6aa6ff);
+    color:#06122c; font-weight:800; font-size:18px; flex:none}
+  section h3{margin:22px 0 8px; font-size:19px; color:#dfe6fb}
+  p{margin:10px 0}
+  .lead{color:var(--muted)}
+
+  .flow{direction:ltr; background:var(--code); border:1px solid var(--line); border-radius:12px;
+    padding:18px; overflow:auto; font-family:"Cascadia Code",Consolas,monospace; font-size:13.5px;
+    color:#cfe0ff; white-space:pre; line-height:1.5}
+
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:15.5px; overflow:hidden;
+    border-radius:10px}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:right; vertical-align:top}
+  th{background:var(--card2); color:#dfe6fb; font-weight:700}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  td code,p code,li code{background:var(--code); border:1px solid var(--line); border-radius:6px;
+    padding:1px 7px; font-family:"Cascadia Code",Consolas,monospace; font-size:13.5px; color:#7fd1ff;
+    direction:ltr; display:inline-block}
+  .tick{color:var(--ok); font-weight:800}
+  .cross{color:var(--danger); font-weight:800}
+
+  pre.code{direction:ltr; background:var(--code); border:1px solid var(--line); border-radius:12px;
+    padding:16px 18px; overflow:auto; font-family:"Cascadia Code",Consolas,monospace; font-size:14px;
+    color:#d7e3ff; margin:14px 0}
+  pre.code .c{color:#6b7aa3}
+
+  .note,.warn,.tip,.danger{border-radius:12px; padding:14px 16px 14px 16px; margin:16px 0;
+    border:1px solid var(--line); position:relative}
+  .note{background:rgba(79,140,255,.08); border-color:rgba(79,140,255,.35)}
+  .tip{background:rgba(34,211,167,.08); border-color:rgba(34,211,167,.35)}
+  .warn{background:rgba(255,176,32,.08); border-color:rgba(255,176,32,.4)}
+  .danger{background:rgba(255,93,108,.08); border-color:rgba(255,93,108,.4)}
+  .note b,.tip b,.warn b,.danger b{display:block; margin-bottom:3px}
+  .tag{font-weight:800}
+  .tip .tag{color:var(--brand2)} .note .tag{color:var(--brand)}
+  .warn .tag{color:var(--warn)} .danger .tag{color:var(--danger)}
+
+  ul.check{list-style:none; padding:0; margin:12px 0}
+  ul.check li{padding:7px 0 7px 0; border-bottom:1px solid var(--line); padding-inline-start:30px;
+    position:relative}
+  ul.check li:before{content:"✓"; position:absolute; right:0; color:var(--ok); font-weight:800}
+  ul.check li:last-child{border-bottom:none}
+
+  .steps{counter-reset:s; list-style:none; padding:0; margin:14px 0}
+  .steps>li{counter-increment:s; position:relative; padding:4px 46px 18px 0; margin:0}
+  .steps>li:before{content:counter(s); position:absolute; right:0; top:0;
+    width:32px; height:32px; border-radius:9px; background:var(--card2); border:1px solid var(--brand);
+    color:var(--brand); font-weight:800; display:flex; align-items:center; justify-content:center}
+  .steps>li:not(:last-child):after{content:""; position:absolute; right:15px; top:34px; bottom:2px;
+    width:2px; background:linear-gradient(var(--brand),transparent)}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media(max-width:760px){ .grid2{grid-template-columns:1fr} nav.toc ol{columns:1} }
+  .mini{background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:16px 18px}
+  .mini h4{margin:0 0 8px; font-size:16px; color:#dfe6fb}
+
+  footer{color:var(--muted); text-align:center; font-size:13.5px; margin-top:30px}
+  footer a{color:var(--brand)}
+  .kbd{direction:ltr; display:inline-block; background:var(--card2); border:1px solid var(--line);
+    border-bottom-width:3px; border-radius:7px; padding:1px 9px; font-family:Consolas,monospace; font-size:13px}
+  a.anchor{color:inherit; text-decoration:none}
+  .pill{font-size:12.5px; padding:3px 10px; border-radius:999px; font-weight:700}
+  .pill.ok{background:rgba(34,197,94,.15); color:#9af0bb; border:1px solid rgba(34,197,94,.4)}
+  .pill.opt{background:rgba(167,176,200,.12); color:#c6cee2; border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>אינטגרציית Paradox ← Crestron Home</h1>
+    <p>קריאת מצב גלאים ואזעקות ממערכת Paradox אל בקר <b>CP4-R</b>, והפעלת תאורה עם טיימר כיבוי בתגובה לתנועה</p>
+    <div class="badges">
+      <span class="badge brand">CP4-R · Crestron Home OS</span>
+      <span class="badge brand">Paradox APR-PRT3 · ASCII</span>
+      <span class="badge ok">פרוטוקול אומת · 22 בדיקות</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>תוכן העניינים</h2>
+    <ol>
+      <li><a href="#arch">איך זה עובד — אדריכלות</a></li>
+      <li><a href="#hw">חיווט החומרה</a></li>
+      <li><a href="#prt3">הגדרת ה-PRT3 ב-BabyWare</a></li>
+      <li><a href="#proto">פרוטוקול ה-ASCII</a></li>
+      <li><a href="#build">בניית הדרייבר (.pkg)</a></li>
+      <li><a href="#upload">העלאה ל-Crestron — צריך או לא?</a></li>
+      <li><a href="#home">הוספה ב-Crestron Home Setup</a></li>
+      <li><a href="#auto">תנועה ← אור ← טיימר</a></li>
+      <li><a href="#diag">אבחון ובדיקות</a></li>
+      <li><a href="#trouble">פתרון תקלות</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 -->
+  <section id="arch">
+    <h2><span class="num">1</span> איך זה עובד — אדריכלות</h2>
+    <p class="lead">ה-CP4-R מריץ <b>Crestron Home OS</b>. בשונה מ-CP4 רגיל, <b>אי אפשר</b> לטעון עליו תוכנית SIMPL מותאמת —
+    ההרחבה היחידה הנתמכת היא <b>Crestron Certified Driver</b> (קובץ <code>.pkg</code>). מתחברים ל-Paradox דרך מודול
+    <b>APR-PRT3</b>, שמדבר בפרוטוקול ASCII פתוח ומתועד (ה-IP150 לבדו סגור/מוצפן).</p>
+<div class="flow">Paradox Panel ──RS-232──► APR-PRT3 ──RS-232──► [Serial↔Ethernet] ──TCP──► CP4-R
+ (גלאים, מחיצות)        (ASCII / Home Auto)   (Lantronix/Moxa/USR)        │  הדרייבר .pkg
+                                                                          │
+                              ┌──────────────────┬────────────────────────┘
+                              ▼                  ▼
+                      Security Partitions   Security Zones / Sensors
+                      דרוך / מנוטרל / אזעקה  פתוח / סגור / תנועה
+                              │                  │
+                              └──────────────────┴──► מנוע האוטומציה של Crestron Home
+                                                       תנועה → אור → טיימר כיבוי</div>
+    <p>הדרייבר <b>קורא</b> מ-PRT3 בשיטת <b>polling</b> יציבה (שאילתות <code>RZ</code>/<code>RA</code>), מזהה שינויים,
+    וחושף כל גלאי כ-Zone וכל מחיצה כ-Partition. את הלוגיקה "תנועה ← אור ← טיימר" בונים במנוע האוטומציה של
+    Crestron Home — כך היא שקופה וניתנת לעריכה ע"י הלקוח בלי לקמפל מחדש.</p>
+  </section>
+
+  <!-- 2 -->
+  <section id="hw">
+    <h2><span class="num">2</span> חיווט החומרה</h2>
+    <h3>רכיבים נדרשים</h3>
+    <table>
+      <tr><th>רכיב</th><th>פירוט</th></tr>
+      <tr><td>לוח Paradox</td><td>EVO / SP / MG / DGP — עם מודול <b>APR-PRT3</b></td></tr>
+      <tr><td>APR-PRT3</td><td>מודול Printer/ASCII — <b>חובה</b></td></tr>
+      <tr><td>ממיר Serial↔Ethernet</td><td>Lantronix UDS/XPort · Moxa NPort · USR-TCP232 (לחיבור IP)</td></tr>
+      <tr><td>CP4-R</td><td>Crestron Home + גישת Setup App</td></tr>
+    </table>
+
+    <h3>חיבור RS-232 בין PRT3 לממיר (Null-modem הפוך)</h3>
+<div class="flow">   APR-PRT3                Serial↔Ethernet
+   ─────────                ───────────────
+   TX  ───────────────────►   RX
+   RX  ◄───────────────────   TX
+   GND ────────────────────   GND</div>
+    <div class="warn"><b class="tag">⚠ שים לב</b>
+      TX של צד אחד מתחבר ל-RX של הצד השני (חיבור מוצלב). אם אתה רואה echo אך לא מקבל תשובות — סימן מובהק ש-TX/RX הפוכים.</div>
+
+    <h3>הגדרות הפורט (זהות בשני הצדדים)</h3>
+    <p><b>57600 bps · 8 data bits · No parity · 1 stop bit (8N1) · ללא בקרת זרימה.</b></p>
+
+    <h3>הגדרת הממיר</h3>
+    <ul class="check">
+      <li>כתובת IP סטטית (למשל <code>192.168.1.50</code>)</li>
+      <li>פורט טורי: 57600 8N1, ללא flow control</li>
+      <li>מצב <b>TCP Server (Raw / Transparent)</b> על פורט (ברירת מחדל נפוצה <code>10001</code>)</li>
+      <li>כיבוי Telnet / COM-Port-Control — רוצים זרם בייטים שקוף</li>
+    </ul>
+    <div class="note"><b class="tag">ℹ רשום</b> את ה-IP והפורט — תזדקק להם בהגדרת הדרייבר ובכלי האבחון.</div>
+  </section>
+
+  <!-- 3 -->
+  <section id="prt3">
+    <h2><span class="num">3</span> הגדרת ה-PRT3 ב-BabyWare</h2>
+    <div class="tip"><b class="tag">✓ אימות מול המסכים שלך</b>
+      בדקתי את צילומי המסך — ההגדרות שלך <b>נכונות</b>. להלן הסעיפים הקריטיים שחייבים להיות מוגדרים כך:</div>
+
+    <h3>אפשרויות יציאה סיריאלית — הקריטי ביותר</h3>
+    <table>
+      <tr><th>כתובת</th><th>הגדרה</th><th>ערך נדרש</th><th>סטטוס שלך</th></tr>
+      <tr><td><code>[016]/5/6</code></td><td>פרוטוקול בית חכם</td><td><b>Ascii Protocol</b></td><td><span class="tick">✓ תקין</span></td></tr>
+      <tr><td><code>[016]/2/3</code></td><td>Baud rate</td><td><b>57600</b></td><td><span class="tick">✓ תקין</span></td></tr>
+      <tr><td><code>[016]/1</code></td><td>אפשר יציאה סיריאלית</td><td>מסומן</td><td><span class="tick">✓ תקין</span></td></tr>
+      <tr><td><code>[016]/4</code></td><td>דולק = בית חכם (Home Automation)</td><td>מסומן</td><td><span class="tick">✓ תקין</span></td></tr>
+    </table>
+
+    <h3>מדורים ואיזורים — מה שמאפשר קריאת מצב</h3>
+    <table>
+      <tr><th>כתובת</th><th>תפקיד</th><th>הערה</th></tr>
+      <tr><td><code>[001]/1-4</code></td><td>מדורים (מחיצות) מדווחים</td><td>ודא שהמחיצה שבשימוש כלולה</td></tr>
+      <tr><td><code>[002] + [003]</code></td><td>הדפסת מצב איזור (גלאים)</td><td><b>חיוני:</b> מאפשר ל-<code>RZ</code> להחזיר מצב גלאי. ודא שכל גלאי תנועה מסומן</td></tr>
+    </table>
+
+    <h3>אפשרויות דיווח</h3>
+    <table>
+      <tr><th>כתובת</th><th>תפקיד</th><th>נחיצות</th></tr>
+      <tr><td><code>[901]/2, [901]/4</code></td><td>דריכה/כיבוי · איזור באזעקה</td><td><span class="pill ok">מומלץ מסומן</span></td></tr>
+      <tr><td><code>[014]/1-7</code></td><td>הדפסת אירועים אוטומטית</td><td><span class="pill opt">אופציונלי</span> — לא חובה ל-polling, לא מזיק</td></tr>
+      <tr><td><code>[903]</code> C-Bus</td><td>הודעות C-Bus</td><td><span class="cross">✗ להשאיר כבוי</span> — לא בשימוש</td></tr>
+    </table>
+
+    <div class="danger"><b class="tag">⚠ חשוב — שמירה</b>
+      מסגרות אדומות ב-BabyWare = שדות שעדיין <b>לא נשמרו למודול</b>. לחץ <b>שמור / OK</b> וודא שההגדרות נכתבו פיזית ל-PRT3,
+      אחרת הן לא יחולו.</div>
+  </section>
+
+  <!-- 4 -->
+  <section id="proto">
+    <h2><span class="num">4</span> פרוטוקול ה-ASCII</h2>
+    <p>כל הודעה מסתיימת ב-<b>CR</b> (ASCII 13). כל פקודה זוכה ל-echo: 5 התווים הראשונים ואחריהם <code>&amp;ok</code> /
+    <code>&amp;fail</code>, או המידע המבוקש (ב-<code>RZ</code>/<code>RA</code>).</p>
+
+    <h3>פקודות שאנו שולחים</h3>
+    <table>
+      <tr><th>פקודה</th><th>פורמט</th><th>דוגמה</th><th>משמעות</th></tr>
+      <tr><td>סטטוס גלאי</td><td><code>RZnnn</code></td><td><code>RZ005</code></td><td>מהו מצב גלאי 5?</td></tr>
+      <tr><td>סטטוס מחיצה</td><td><code>RAnnn</code></td><td><code>RA001</code></td><td>מהו מצב מחיצה 1?</td></tr>
+      <tr><td>דריכה</td><td><code>AAnnn&lt;m&gt;&lt;PIN&gt;</code></td><td><code>AA001A1234</code></td><td>דריכת מחיצה 1</td></tr>
+      <tr><td>נטרול</td><td><code>ADnnn&lt;PIN&gt;</code></td><td><code>AD0011234</code></td><td>נטרול מחיצה 1</td></tr>
+    </table>
+
+    <div class="grid2">
+      <div class="mini">
+        <h4>תשובת גלאי — <code>RZ005<b>O</b></code></h4>
+        <table>
+          <tr><th>תו</th><th>מצב</th><th>תנועה?</th></tr>
+          <tr><td><code>C</code></td><td>סגור / תקין</td><td>לא</td></tr>
+          <tr><td><code>O</code></td><td>פתוח / תנועה</td><td><span class="tick">כן</span></td></tr>
+          <tr><td><code>T</code></td><td>חבלה (Tamper)</td><td>כן</td></tr>
+          <tr><td><code>F</code></td><td>אש (Fire)</td><td>כן</td></tr>
+        </table>
+      </div>
+      <div class="mini">
+        <h4>תשובת מחיצה — <code>RA001<b>A</b>----<b>A</b>-</code></h4>
+        <table>
+          <tr><th>שדה</th><th>תו</th><th>משמעות</th></tr>
+          <tr><td>דריכה</td><td><code>D</code>/<code>A</code></td><td>מנוטרל / דרוך</td></tr>
+          <tr><td>אזעקה</td><td><code>O</code>/<code>A</code></td><td>תקין / באזעקה</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="tip"><b class="tag">✓ אומת</b> לוגיקת הפענוח נבדקה ב-22 בדיקות יחידה (<code>gateway/test_paradox_prt3.py</code>),
+      וקוד ה-C# בדרייבר ממומש לפי אותה התנהגות בדיוק.</div>
+  </section>
+
+  <!-- 5 -->
+  <section id="build">
+    <h2><span class="num">5</span> בניית הדרייבר (קובץ <code>.pkg</code>)</h2>
+    <h3>דרישות מקדימות</h3>
+    <ul class="check">
+      <li>חשבון מפתחים ב-Crestron (Developer account)</li>
+      <li><b>Crestron Drivers SDK</b> — כולל ה-DLLים ו-<b>ManifestUtil.exe</b></li>
+      <li>Visual Studio 2019+ (netstandard2.0)</li>
+    </ul>
+    <ol class="steps">
+      <li><b>אמת את הליבה</b> — הרץ את בדיקות ה-Python (<code>python3 -m unittest test_paradox_prt3</code>). מחלקת
+        <code>ParadoxProtocol</code> ב-C# ממומשת לפי אותה התנהגות.</li>
+      <li><b>חבר References ל-SDK</b> — ב-<code>.csproj</code> עדכן את ה-<code>HintPath</code> ל-DLLים
+        <code>Crestron.RAD.Common</code> ו-<code>Crestron.RAD.DeviceTypes.Security</code>.</li>
+      <li><b>התאם את הקישור ל-SDK</b> — ב-<code>ParadoxPrt3SecurityDriver.cs</code> אמת את חתימות מחלקת הבסיס
+        מול גרסת ה-SDK שלך, ומפה את האירועים (<code>ZoneChanged</code>/<code>AreaChanged</code>) ל-API.</li>
+      <li><b>קמפל ב-Release</b> — הפלט הוא <code>Mila_SecuritySystem_Paradox_PRT3_IP.dll</code>.</li>
+      <li><b>הרץ ManifestUtil</b> — העתק את ה-DLL לתיקיית הכלי והרץ אותו. ייווצר קובץ <code>.pkg</code>.</li>
+    </ol>
+    <div class="note"><b class="tag">ℹ מוסכמת שם</b>
+      <code>&lt;Developer&gt;_&lt;DeviceType&gt;_&lt;Manufacturer&gt;_&lt;BaseModel&gt;_&lt;Communication&gt;</code> →
+      <code>Mila_SecuritySystem_Paradox_PRT3_IP</code></div>
+  </section>
+
+  <!-- 6 -->
+  <section id="upload">
+    <h2><span class="num">6</span> העלאה ל-Crestron — צריך או לא?</h2>
+    <div class="tip"><b class="tag">תשובה קצרה</b>
+      <b>לא צריך</b> להעלות לאתר מפתחי Crestron כדי להשתמש בדרייבר במערכת שלך. אתה בונה את ה-<code>.pkg</code>
+      בעצמך וטוען אותו <b>ישירות</b> ל-Crestron Home דרך ה-Setup App.</div>
+    <table>
+      <tr><th>מסלול</th><th>מתי</th><th>מה עושים</th></tr>
+      <tr>
+        <td><b>שימוש עצמי / לקוח שלך</b><br><span class="pill ok">זה מה שאתה צריך</span></td>
+        <td>התקנה במערכת ספציפית</td>
+        <td>מקמפלים <code>.pkg</code> מקומית (SDK + ManifestUtil) ← טוענים ישירות ב-Crestron Home Setup. <b>בלי העלאה ל-Crestron.</b></td>
+      </tr>
+      <tr>
+        <td><b>הסמכה והפצה ציבורית</b><br><span class="pill opt">אופציונלי</span></td>
+        <td>רוצים שהדרייבר יופיע במאגר הגלובלי לכל המתקינים</td>
+        <td>מגישים ל-Crestron ב-"Submit a Driver" → תהליך אישור וחתימה רשמי</td>
+      </tr>
+    </table>
+    <p>כלומר הזרימה שלך: <b>בונה .pkg ← טוען ב-Crestron Home Setup ← גמרת.</b> ההעלאה לפורטל המפתחים נדרשת רק
+    אם תרצה להפיץ את הדרייבר מסחרית לאחרים.</p>
+  </section>
+
+  <!-- 7 -->
+  <section id="home">
+    <h2><span class="num">7</span> הוספה ב-Crestron Home Setup</h2>
+    <ol class="steps">
+      <li><b>טען את הדרייבר</b> — ב-Setup App: <code>Settings → Drivers</code> → Load/Add Custom Driver →
+        העלה את <code>Mila_SecuritySystem_Paradox_PRT3_IP.pkg</code>.</li>
+      <li><b>הוסף התקן</b> — <code>Devices → Add Device</code> → קטגוריה <b>Security</b> → בחר את הדרייבר.</li>
+      <li><b>הזן הגדרות חיבור:</b>
+        <table>
+          <tr><th>שדה</th><th>ערך</th></tr>
+          <tr><td>Host</td><td>IP של הממיר (<code>192.168.1.50</code>)</td></tr>
+          <tr><td>Port</td><td><code>10001</code></td></tr>
+          <tr><td>UserPin</td><td>קוד משתמש לדריכה/נטרול (אופציונלי)</td></tr>
+          <tr><td>Zones</td><td>גלאים לסקירה, CSV — <code>1,2,5,8</code></td></tr>
+          <tr><td>Partitions</td><td>מחיצות — <code>1</code></td></tr>
+        </table>
+      </li>
+      <li><b>אמת תקשורת</b> — הדרייבר צריך להראות <b>Online</b>. הזז יד מול גלאי → ה-Zone משתנה ל-Open וחוזר ל-Closed.</li>
+      <li><b>מפה לחדרים</b> — שייך כל Zone לחדר, תן שם ברור (סלון-תנועה, מחסן…), וסמן גלאי תנועה כ-Motion/Occupancy.</li>
+    </ol>
+  </section>
+
+  <!-- 8 -->
+  <section id="auto">
+    <h2><span class="num">8</span> תנועה ← אור ← טיימר</h2>
+    <p class="lead">זה לב הפרויקט. יש שתי דרכים — <b>מומלץ מסלול א'</b> (נייטיב Crestron Home).</p>
+
+    <h3>מסלול א' (מומלץ) — Auto-Off של חדר</h3>
+    <ol class="steps">
+      <li>ב-<code>Rooms → (החדר) → Room Settings / Lights</code> הפעל <b>Occupancy-based / Auto-Off</b>.</li>
+      <li>בחר את גלאי התנועה של Paradox כמקור הנוכחות של החדר.</li>
+      <li>הגדר <b>Auto-Off Timeout</b> = זמן הכיבוי (למשל 90 שניות / 2 דקות).</li>
+      <li>בחר אילו עומסי תאורה נדלקים בנוכחות.</li>
+    </ol>
+    <div class="note"><b class="tag">ℹ למה Auto-Off ולא Delay קשיח?</b>
+      גלאי PIR מדווח <code>Open</code> לרגע וחוזר ל-<code>Closed</code>. מנגנון ה-Auto-Off של החדר נועד בדיוק לזה —
+      כל "תנועה" מאריכה את חלון הנוכחות ומאפסת את הטיימר. זו ההתנהגות שאתה רוצה.</div>
+
+    <h3>מסלול א'2 — Automation/Events (גמיש)</h3>
+    <p>אם רוצים תנאים: <b>Trigger</b> = גלאי עובר ל-Open + תנאי "המחיצה דרוכה"; <b>Action</b> = הדלקת סצנת תאורה;
+    הכיבוי דרך Auto-Off של החדר או Delayed-Off אם הגרסה תומכת.</p>
+
+    <h3>מסלול ב' — לוגיקה עצמאית (כלי הגישור)</h3>
+    <p>ממומש ובדוק ב-Python (<code>MotionLightController</code>): תנועה ← <code>light_on()</code> ← טיימר; כל תנועה מאפסת;
+    תום הטיימר ← <code>light_off()</code>; תנאי <code>only_when_armed_area</code> אופציונלי. מתאים להרצה על Raspberry Pi צמוד ל-PRT3.</p>
+<pre class="code"><span class="c"># הרצת לוגיקת תנועה→אור→טיימר מתוך config.json</span>
+cd gateway
+cp config.example.json config.json   <span class="c"># ערוך: גלאים, זמנים, פקודות הדלקה/כיבוי</span>
+python3 cli.py run --config config.json</pre>
+  </section>
+
+  <!-- 9 -->
+  <section id="diag">
+    <h2><span class="num">9</span> אבחון ובדיקות</h2>
+    <p>לפני שנוגעים ב-Crestron — אמת חיווט והגדרות PRT3 עם כלי ה-Python מכל מחשב באותה רשת:</p>
+<pre class="code">cd gateway
+python3 cli.py monitor --tcp 192.168.1.50:10001 --zones 1-8 --areas 1
+
+<span class="c"># פלט לדוגמה בזמן תנועה:</span>
+<span class="c"># [ZONE 005] ZoneState.CLOSED -> OPEN</span>
+<span class="c"># [AREA 001] arm=armed alarm=ok</span></pre>
+    <p>בדיקת לוגיקת הפענוח בלבד (ללא חומרה):</p>
+<pre class="code">cd gateway && python3 -m unittest test_paradox_prt3 -v   <span class="c"># 22 passed</span></pre>
+    <div class="tip"><b class="tag">✓ עיקרון</b>
+      אם כלי ה-Python מצליח לקרוא מצבים אך Crestron לא — הבעיה ברשת/הגדרות הדרייבר, לא ב-PRT3.</div>
+  </section>
+
+  <!-- 10 -->
+  <section id="trouble">
+    <h2><span class="num">10</span> פתרון תקלות</h2>
+    <table>
+      <tr><th>תופעה</th><th>סיבה סבירה</th><th>פתרון</th></tr>
+      <tr><td>echo מתקבל אך אין תשובות</td><td>TX/RX הפוכים</td><td>החלף TX↔RX (חיבור מוצלב)</td></tr>
+      <tr><td>אין כלום על הקו</td><td>מצב/מהירות PRT3</td><td>ודא <code>[016]/5/6</code>=ASCII, <code>[016]/2/3</code>=57600, ושמרת</td></tr>
+      <tr><td><code>RZ</code> לא מחזיר מצב גלאי</td><td>הגלאי לא מסומן לדיווח</td><td>סמן את הגלאי ב-<code>[002]/[003]</code> ושמור</td></tr>
+      <tr><td><code>&amp;fail</code> על דריכה/נטרול</td><td>קוד/מחיצה שגויים</td><td>בדוק PIN ושהמחיצה קיימת ומסומנת ב-<code>[001]</code></td></tr>
+      <tr><td>הדרייבר Offline ב-Crestron</td><td>רשת / IP / פורט</td><td>ודא שכלי ה-Python מתחבר לאותו host:port</td></tr>
+      <tr><td>השינויים לא נשמרו</td><td>שדות אדומים ב-BabyWare</td><td>לחץ שמור / OK וכתוב למודול</td></tr>
+    </table>
+  </section>
+
+  <footer>
+    <p>מקורות: Paradox APR3-PRT3 ASCII Protocol · <a href="https://sdkcon78221.crestron.com/">Crestron Drivers SDK</a> ·
+    <a href="https://docs.crestron.com/">Crestron Home OS Docs (CP4-R)</a></p>
+    <p>המדריך והקוד נמצאים ב-repository, ענף <code>claude/crestron-paradox-integration-t1ufg9</code></p>
+  </footer>
+
+</div>
+</body>
+</html>
