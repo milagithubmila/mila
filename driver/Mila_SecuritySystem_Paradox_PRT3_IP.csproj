@@ -1,0 +1,48 @@
+<!--
+  פרויקט הדרייבר ל-Crestron Certified Driver.
+
+  שם הקובץ עוקב אחר מוסכמת Crestron:
+    <Developer>_<DeviceType>_<Manufacturer>_<BaseModel>_<Communication>
+    Mila_SecuritySystem_Paradox_PRT3_IP
+
+  בנייה:
+    1. התקן את Crestron Drivers SDK (מ-https://sdkcon78221.crestron.com/) ואת
+       חבילות ה-NuGet/DLL: Crestron.RAD.Common, Crestron.RAD.DeviceTypes.Security,
+       Crestron.SimplSharp.SDK.* (לפי גרסת ה-SDK).
+    2. עדכן את ה-HintPath של ה-References למיקום ה-DLL אצלך, או החלף
+       ב-PackageReference אם אתה משתמש ב-NuGet של Crestron.
+    3. קמפל (Release). הפלט הוא DLL.
+    4. הרץ את ManifestUtil.exe (מה-SDK) על ה-DLL כדי לייצר את קובץ ה-.pkg.
+
+  הסמל CRESTRON_RAD מפעיל את הקוד תלוי-ה-SDK (ParadoxPrt3SecurityDriver.cs).
+  ללא הסמל — נבנים רק קבצי הליבה (Protocol/Engine/Transport) ללא תלות ב-SDK.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Mila_SecuritySystem_Paradox_PRT3_IP</AssemblyName>
+    <RootNamespace>Mila.Paradox.Prt3</RootNamespace>
+    <!-- הסר/השאר את הסמל בהתאם לשלב הפיתוח -->
+    <DefineConstants>CRESTRON_RAD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src\ParadoxProtocol.cs" />
+    <Compile Include="src\Prt3Engine.cs" />
+    <Compile Include="src\ParadoxTcpTransport.cs" />
+    <Compile Include="src\ParadoxPrt3SecurityDriver.cs" />
+  </ItemGroup>
+
+  <!-- עדכן את ה-HintPath למיקום ה-DLL של ה-SDK אצלך -->
+  <ItemGroup Condition="'$(DefineConstants.Contains(CRESTRON_RAD))' == 'true'">
+    <Reference Include="Crestron.RAD.Common">
+      <HintPath>$(CrestronSdkPath)\Crestron.RAD.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Crestron.RAD.DeviceTypes.Security">
+      <HintPath>$(CrestronSdkPath)\Crestron.RAD.DeviceTypes.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,3 @@
+# נדרש רק עבור חיבור טורי ישיר (SerialTransport).
+# לחיבור TCP דרך ממיר Serial<->Ethernet אין צורך בתלויות חיצוניות.
+pyserial>=3.5

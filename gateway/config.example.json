@@ -1,0 +1,35 @@
+{
+  "_comment": "קובץ הגדרות לדוגמה למצב 'run' של כלי הגישור העצמאי. העתק ל-config.json וערוך.",
+
+  "transport": {
+    "type": "tcp",
+    "host": "192.168.1.50",
+    "port": 10001,
+
+    "_serial_example": {
+      "type": "serial",
+      "port": "/dev/ttyUSB0",
+      "baud": 57600
+    }
+  },
+
+  "poll_interval": 0.4,
+
+  "rules": [
+    {
+      "_comment": "גלאי תנועה במחסן (זון 5). כשמתגלה תנועה והמערכת דרוכה -> מדליק אור, ומכבה 90 שניות אחרי התנועה האחרונה.",
+      "zone": 5,
+      "timeout_sec": 90,
+      "only_when_armed_area": 1,
+      "light_on_cmd": "curl -s -X POST http://192.168.1.60/relay/0?turn=on",
+      "light_off_cmd": "curl -s -X POST http://192.168.1.60/relay/0?turn=off"
+    },
+    {
+      "_comment": "גלאי מסדרון (זון 8) — פועל תמיד, ללא תלות בדריכה.",
+      "zone": 8,
+      "timeout_sec": 120,
+      "light_on_cmd": "curl -s 'http://192.168.1.61/cm?cmnd=Power%20On'",
+      "light_off_cmd": "curl -s 'http://192.168.1.61/cm?cmnd=Power%20Off'"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "_comment": "תבנית DriverData ל-CCD. המבנה המדויק תלוי בגרסת ה-SDK — אמת מול הדוגמאות של Crestron Drivers SDK (Sample Projects -> Security). ערכי ה-Zones/Partitions למטה הם לדוגמה והותאמו אצלך במסך ההגדרות.",
+
+  "Header": {
+    "Manufacturer": "Paradox",
+    "BaseModel": "APR-PRT3",
+    "DeviceType": "Security System",
+    "Description": "Paradox alarm panel via APR-PRT3 ASCII (Home Automation) over IP",
+    "DriverVersion": "1.0.0",
+    "SdkVersion": "TODO: מלא לפי ה-SDK המותקן",
+    "Manufacturer_Url": "https://www.paradox.com/",
+    "Developer": "Mila"
+  },
+
+  "DeviceSupport": {
+    "Authentication": false,
+    "Partitions": true,
+    "Zones": true,
+    "Arm": true,
+    "Disarm": true,
+    "ArmStay": true,
+    "ArmInstant": true
+  },
+
+  "CommunicationParameters": {
+    "Transport": "TCP",
+    "DefaultPort": 10001,
+    "Comment_Serial": "אם משתמשים בחיבור טורי ישיר במקום ממיר IP: 57600 8N1 (ניתן לשנות בכתובת PRT3 [022])"
+  },
+
+  "UserAttributes": [
+    {
+      "Name": "Host",
+      "Label": "כתובת IP של ממיר Serial<->Ethernet",
+      "Type": "String",
+      "Default": "192.168.1.50"
+    },
+    {
+      "Name": "Port",
+      "Label": "פורט TCP",
+      "Type": "Number",
+      "Default": 10001
+    },
+    {
+      "Name": "UserPin",
+      "Label": "קוד משתמש לדריכה/נטרול",
+      "Type": "Password",
+      "Default": ""
+    },
+    {
+      "Name": "Zones",
+      "Label": "רשימת מספרי גלאים לסקירה (CSV, למשל 1,2,5,8)",
+      "Type": "String",
+      "Default": "1,2,3,4,5,6,7,8"
+    },
+    {
+      "Name": "Partitions",
+      "Label": "רשימת מספרי מחיצות (CSV)",
+      "Type": "String",
+      "Default": "1"
+    },
+    {
+      "Name": "PollIntervalMs",
+      "Label": "מרווח סקירה (אלפיות שנייה)",
+      "Type": "Number",
+      "Default": 400
+    }
+  ],
+
+  "Zones": [
+    { "Id": 1, "Name": "כניסה ראשית", "Type": "Door" },
+    { "Id": 2, "Name": "סלון - תנועה", "Type": "Motion" },
+    { "Id": 5, "Name": "מחסן - תנועה", "Type": "Motion" },
+    { "Id": 8, "Name": "מסדרון - תנועה", "Type": "Motion" }
+  ],
+
+  "Partitions": [
+    { "Id": 1, "Name": "בית" }
+  ]
+}

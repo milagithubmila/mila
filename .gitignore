@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+gateway/config.json          # קונפיג מקומי (מכיל IP/קודים) — לא ל-repo
+
+# C# / .NET / Crestron
+bin/
+obj/
+*.user
+*.dll
+*.pkg                        # פלט הבנייה — נוצר ב-ManifestUtil אצלך
+ManifestUtil/
+
+# IDE / OS
+.vs/
+.idea/
+.DS_Store
