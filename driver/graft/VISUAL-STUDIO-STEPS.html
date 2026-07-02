@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מדריך Visual Studio — שלב אחר שלב</title>
+<style>
+  :root{--card:#171c2e;--card2:#1f2540;--ink:#e9ecf5;--muted:#a7b0c8;--brand:#4f8cff;
+    --brand2:#22d3a7;--warn:#ffb020;--danger:#ff5d6c;--ok:#22c55e;--line:#2a3150;--code:#0b0e18;--radius:14px;}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c1020,#0f1320 220px);color:var(--ink);
+    font-family:"Segoe UI",Arial,sans-serif;line-height:1.8;font-size:16.5px}
+  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 80px}
+  header.hero{background:radial-gradient(1000px 260px at 85% -40%,rgba(79,140,255,.22),transparent),var(--card);
+    border:1px solid var(--line);border-radius:20px;padding:30px 32px;margin-bottom:24px}
+  header.hero h1{margin:0 0 6px;font-size:26px}
+  header.hero p{margin:0;color:var(--muted);font-size:16px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px}
+  section h2{margin:0 0 8px;font-size:21px;display:flex;align-items:center;gap:11px}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;
+    border-radius:10px;background:linear-gradient(135deg,var(--brand),#6aa6ff);color:#06122c;font-weight:800;font-size:17px;flex:none}
+  p{margin:9px 0}
+  code{background:var(--code);border:1px solid var(--line);border-radius:6px;padding:1px 7px;
+    font-family:Consolas,monospace;font-size:13.5px;color:#7fd1ff;direction:ltr;display:inline-block}
+  .path{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:9px;
+    padding:9px 13px;font-family:Consolas,monospace;font-size:13.5px;color:#ffd98a;margin:8px 0;overflow-x:auto;white-space:pre}
+  .click{direction:rtl;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin:10px 0}
+  .click b{color:var(--brand2)}
+  .arrow{color:var(--brand);font-weight:800;padding:0 4px}
+  .box{border-radius:11px;padding:13px 16px;margin:14px 0;border:1px solid var(--line)}
+  .tip{background:rgba(34,211,167,.08);border-color:rgba(34,211,167,.35)}
+  .note{background:rgba(79,140,255,.08);border-color:rgba(79,140,255,.35)}
+  .warn{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.4)}
+  .danger{background:rgba(255,93,108,.09);border-color:rgba(255,93,108,.45)}
+  .box b{display:block;margin-bottom:2px}
+  .tip b{color:var(--brand2)} .note b{color:var(--brand)} .warn b{color:var(--warn)} .danger b{color:var(--danger)}
+  .tree{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:11px;
+    padding:15px 17px;font-family:Consolas,monospace;font-size:13px;color:#cfe0ff;white-space:pre;overflow-x:auto;line-height:1.6;margin:12px 0}
+  .tree .our{color:#86efac}
+  .tree .sdk{color:#ffd98a}
+  .file{display:inline-block;background:var(--code);border:1px solid var(--line);border-radius:7px;padding:2px 9px;
+    font-family:Consolas,monospace;font-size:13px;color:#7fd1ff;direction:ltr;margin:2px}
+  footer{color:var(--muted);text-align:center;font-size:12.5px;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>מדריך Visual Studio — פתיחה, הוספת קבצים ובנייה</h1>
+    <p>שלב אחר שלב, עם שמות התיקיות והקבצים בדיוק כפי שהם אצלך במסך.</p>
+  </header>
+
+  <section>
+    <h2>מבנה התיקיות שלך (כפי שראיתי בתמונה)</h2>
+<div class="tree">mila-claude-crestron-paradox-integration-t1ufg9\
+├── <span class="sdk">Crestron SDK Folder\</span>            <span style="color:#6b7aa3">← קבצי הדוגמה של Crestron (כאן נעבוד)</span>
+│   ├── DriverData.json
+│   ├── SampleTransport.cs
+│   ├── SecuritySystem_Crestron_SampleDriverModel_IP   <span style="color:#6b7aa3">← קובץ הפרויקט (זה מה שפותחים)</span>
+│   ├── SecuritySystemArea.cs
+│   ├── SecuritySystemDriverIP.cs
+│   ├── SecuritySystemKeypad.cs
+│   ├── SecuritySystemProtocol.cs
+│   ├── SecuritySystemZone.cs
+│   └── SendTransportData.cs
+├── <span class="our">driver\src\</span>                     <span style="color:#6b7aa3">← 3 הקבצים שלנו להוספה</span>
+│   ├── ParadoxProtocol.cs
+│   ├── Prt3Engine.cs
+│   └── ParadoxTcpTransport.cs
+├── docs\
+├── gateway\
+└── README.md</div>
+  </section>
+
+  <section>
+    <h2><span class="num">1</span> סגור את "Create a new project"</h2>
+    <div class="danger"><b>⚠ לא יוצרים פרויקט חדש!</b>
+      במסך שפתחת ("Create a new project") — לחץ על ה-<b>X</b> בפינה כדי לסגור. אנחנו <b>פותחים</b> את פרויקט
+      הדוגמה הקיים, לא יוצרים חדש.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> פתח את פרויקט הדוגמה</h2>
+    <div class="click"><b>File</b> <span class="arrow">←</span> <b>Open</b> <span class="arrow">←</span> <b>Project/Solution…</b></div>
+    <p>נווט לתיקייה:</p>
+    <div class="path">mila-claude-crestron-paradox-integration-t1ufg9\Crestron SDK Folder\</div>
+    <p>ובחר את הקובץ שמתחיל ב-<code>SecuritySystem_Crestron_SampleDriverModel_IP</code> (קובץ הפרויקט של Visual Studio) → <b>Open</b>.</p>
+    <div class="note"><b>ℹ אם קופצת בקשה להחזיר חבילות (Restore NuGet)</b> — אשר. אלה חבילות ה-SDK (DevKit + ManifestUtil).</div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> (מומלץ) בנה פעם אחת "כמו שזה"</h2>
+    <p>לפני שנוגעים בקוד — ודא שהפרויקט המקורי נבנה אצלך. זה קו-הבסיס הבטוח:</p>
+    <div class="click">למעלה: שנה <b>Debug</b> ל-<b>Release</b> &nbsp;·&nbsp; ואז <b>Build</b> <span class="arrow">←</span> <b>Build Solution</b> (<code>Ctrl+Shift+B</code>)</div>
+    <p>אם למטה מופיע <b>Build: 1 succeeded</b> — מצוין, אפשר להמשיך.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> העתק את 3 הקבצים שלנו לתיקיית הפרויקט</h2>
+    <p>ב-<b>File Explorer</b> (סייר הקבצים של Windows), העתק את שלושת הקבצים:</p>
+    <div class="path">מ:  mila-claude-crestron-paradox-integration-t1ufg9\driver\src\</div>
+    <p><span class="file">ParadoxProtocol.cs</span><span class="file">Prt3Engine.cs</span><span class="file">ParadoxTcpTransport.cs</span></p>
+    <div class="path">אל: mila-claude-crestron-paradox-integration-t1ufg9\Crestron SDK Folder\</div>
+    <p>(עכשיו שלושת הקבצים יושבים באותה תיקייה עם קבצי הדוגמה.)</p>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span> הוסף אותם לפרויקט ב-Visual Studio</h2>
+    <p>ב-<b>Solution Explorer</b> (חלון העץ מימין ב-VS):</p>
+    <div class="click">קליק-ימני על שם הפרויקט <b>SecuritySystem_Crestron_SampleDriverModel_IP</b>
+      <span class="arrow">←</span> <b>Add</b> <span class="arrow">←</span> <b>Existing Item…</b></div>
+    <p>בחלון שנפתח, בחר את שלושת הקבצים שהעתקת (מתוך <code>Crestron SDK Folder</code>):</p>
+    <p><span class="file">ParadoxProtocol.cs</span><span class="file">Prt3Engine.cs</span><span class="file">ParadoxTcpTransport.cs</span> <span class="arrow">←</span> <b>Add</b></p>
+    <div class="tip"><b>✓ בדיקה</b> אחרי ההוספה, שלושת הקבצים אמורים להופיע ברשימת הפרויקט ב-Solution Explorer,
+      יחד עם <code>SecuritySystemProtocol.cs</code> ושאר קבצי הדוגמה.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span> בצע את עריכות הקוד</h2>
+    <p>עכשיו נבצע את השתילה עצמה — פתיחת קבצי הדוגמה ועריכתם לפי המדריך המפורט.
+    כל בלוק קוד שם מוכן להעתקה:</p>
+    <div class="note"><b>📄 פתח את <code>INTEGRATION.html</code></b>
+      (המדריך ששלחתי קודם) ובצע את שלבים ב'–ו':
+      <ul style="margin:8px 0">
+        <li><b>ב'</b> — <code>SecuritySystemDriverIP.cs</code>: שורה אחת (קריאה ל-StartEngine).</li>
+        <li><b>ג'</b> — <code>SecuritySystemProtocol.cs</code>: הלב (using, שדות, StartEngine, מטפלי אירועים, DataHandler, ExecuteSecurityCommands, Dispose).</li>
+        <li><b>ד'</b> — <code>SecuritySystemZone.cs</code>: מתודה אחת.</li>
+        <li><b>ה'</b> — <code>SecuritySystemArea.cs</code>: שתי מתודות.</li>
+        <li><b>ו'</b> — <code>SampleTransport.cs</code>: הפוך לפסיבי.</li>
+      </ul>
+      כדי לפתוח קובץ לעריכה — דאבל-קליק עליו ב-Solution Explorer.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">7</span> בנה וקבל את ה-<code>.pkg</code></h2>
+    <div class="click">ודא <b>Release</b> למעלה &nbsp;·&nbsp; <b>Build</b> <span class="arrow">←</span> <b>Build Solution</b></div>
+    <p>אם הבנייה הצליחה, קובץ הדרייבר נוצר כאן:</p>
+    <div class="path">Crestron SDK Folder\bin\Release\  →  ...IP.pkg</div>
+    <p>זה הקובץ שנטען ל-Crestron Home בשלב הבא.</p>
+
+    <div class="warn"><b>⚠ שגיאת בנייה? זה צפוי בפעם הראשונה.</b>
+      פתח למטה את חלון <b>Error List</b>, צלם את השגיאה הראשונה (או העתק את הטקסט), ושלח לי — אתקן מיד.
+      אל תנסה לתקן לבד; נעשה את זה יחד.</div>
+  </section>
+
+  <footer>מדריך זה + <code>INTEGRATION.html</code> (עריכות הקוד) נמצאים ב-repository תחת <code>driver/graft/</code></footer>
+</div>
+</body>
+</html>
