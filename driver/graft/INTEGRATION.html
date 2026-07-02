@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מדריך שתילה — Paradox PRT3 בתוך דוגמת Crestron</title>
+<style>
+  :root{--card:#171c2e;--card2:#1f2540;--ink:#e9ecf5;--muted:#a7b0c8;--brand:#4f8cff;
+    --brand2:#22d3a7;--warn:#ffb020;--danger:#ff5d6c;--ok:#22c55e;--line:#2a3150;--code:#0b0e18;--radius:14px;}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0c1020,#0f1320 220px);color:var(--ink);
+    font-family:"Segoe UI",Arial,sans-serif;line-height:1.8;font-size:16.5px}
+  .wrap{max-width:1000px;margin:0 auto;padding:30px 20px 80px}
+  header.hero{background:radial-gradient(1000px 260px at 85% -40%,rgba(79,140,255,.22),transparent),var(--card);
+    border:1px solid var(--line);border-radius:20px;padding:30px 32px;margin-bottom:24px}
+  header.hero h1{margin:0 0 6px;font-size:27px}
+  header.hero p{margin:0;color:var(--muted);font-size:16px}
+  nav.toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:24px}
+  nav.toc h2{margin:0 0 8px;font-size:15px;color:var(--muted)}
+  nav.toc a{color:var(--ink);text-decoration:none;margin-inline-end:6px}
+  nav.toc a:hover{color:var(--brand)}
+  nav.toc li{margin:4px 0}
+  nav.toc ol{margin:0;padding-inline-start:20px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px}
+  section h2{margin:0 0 8px;font-size:22px;display:flex;align-items:center;gap:11px}
+  .num{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 8px;
+    border-radius:10px;background:linear-gradient(135deg,var(--brand),#6aa6ff);color:#06122c;font-weight:800;font-size:15px;flex:none}
+  section h3{margin:18px 0 6px;font-size:18px;color:#dfe6fb}
+  p{margin:9px 0}
+  code{background:var(--code);border:1px solid var(--line);border-radius:6px;padding:1px 7px;
+    font-family:Consolas,monospace;font-size:13.5px;color:#7fd1ff;direction:ltr;display:inline-block}
+  pre.code{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:12px;
+    padding:15px 17px;overflow-x:auto;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px;
+    color:#d7e3ff;margin:12px 0;line-height:1.55;white-space:pre}
+  pre.code .cm{color:#6b8a6f}
+  pre.code .add{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px;border-radius:9px;overflow:hidden}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:right;vertical-align:top}
+  th{background:var(--card2);color:#dfe6fb}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  .box{border-radius:11px;padding:13px 16px;margin:14px 0;border:1px solid var(--line)}
+  .tip{background:rgba(34,211,167,.08);border-color:rgba(34,211,167,.35)}
+  .note{background:rgba(79,140,255,.08);border-color:rgba(79,140,255,.35)}
+  .warn{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.4)}
+  .ok2{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.4)}
+  .box b{display:block;margin-bottom:2px}
+  .tip b{color:var(--brand2)} .note b{color:var(--brand)} .warn b{color:var(--warn)} .ok2 b{color:#86efac}
+  .file{display:inline-block;background:var(--code);border:1px solid var(--line);border-radius:7px;padding:2px 9px;
+    font-family:Consolas,monospace;font-size:13px;color:#7fd1ff;direction:ltr;margin:2px}
+  .flow{direction:ltr;background:var(--code);border:1px solid var(--line);border-radius:11px;padding:15px;
+    overflow-x:auto;font-family:Consolas,monospace;font-size:12.5px;color:#cfe0ff;white-space:pre;line-height:1.5;margin:12px 0}
+  .pick{display:inline-block;background:var(--brand);color:#06122c;font-weight:800;padding:2px 12px;border-radius:8px}
+  .yes{color:var(--ok);font-weight:800}
+  footer{color:var(--muted);text-align:center;font-size:12.5px;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>מדריך שתילה — Paradox PRT3 בתוך דוגמת ה-Security של Crestron</h1>
+    <p>הופך את פרויקט הדוגמה של Crestron SDK v28 לדרייבר Paradox אמיתי. כל בלוק קוד — להעתקה ישירה.</p>
+  </header>
+
+  <nav class="toc">
+    <h2>שלבים</h2>
+    <ol>
+      <li><a href="#dec">החלטת תצורה + ארכיטקטורה</a></li>
+      <li><a href="#a">שלב א' — הוספת 3 הקבצים שלנו</a></li>
+      <li><a href="#b">שלב ב' — עריכת SecuritySystemDriverIP.cs</a></li>
+      <li><a href="#c">שלב ג' — עריכת SecuritySystemProtocol.cs (הלב)</a></li>
+      <li><a href="#d">שלב ד' — SecuritySystemZone.cs</a></li>
+      <li><a href="#e">שלב ה' — SecuritySystemArea.cs</a></li>
+      <li><a href="#f">שלב ו' — SampleTransport.cs (פסיבי)</a></li>
+      <li><a href="#g">שלב ז' — בנייה + הגדרות + תקלות</a></li>
+    </ol>
+  </nav>
+
+  <!-- ===== 0 ===== -->
+  <section id="dec">
+    <h2><span class="num">0</span> החלטת תצורה + ארכיטקטורה</h2>
+    <div class="box ok2"><b>✓ תצורה: TCP/IP דרך ממיר Serial↔Ethernet</b>
+      גמיש, והדרייבר מקבל את ה-Host/Port אוטומטית מהגדרת ההתקן ב-Crestron Home.
+      <b>Serial ישיר</b> עובד גם — אותה לוגיקה, רק מקבל <code>IComPort</code> במקום <code>IPAddress/port</code>.</div>
+
+    <p>מנוע ה-PRT3 שלנו (<code>Prt3Engine</code>) פותח בעצמו את החיבור, סורק <code>RZ</code>/<code>RA</code>,
+    ומפיץ אירועי שינוי. שכבת ה-<code>SecuritySystemProtocol</code> רק "מתרגמת" את האירועים לאובייקטי Zone/Area של Crestron.</p>
+<div class="flow">Crestron Home  ◄─events─  SecuritySystemProtocol  ◄─events─  Prt3Engine ──socket──► ממיר ──► PRT3
+   (UI/אוטומציה)          (המתרגם ששותלים בו)                (הקוד הבדוק שלנו)</div>
+
+    <table>
+      <tr><th>מצב ב-PRT3</th><th>מה קורה אצל Crestron</th></tr>
+      <tr><td>גלאי Open (תנועה)</td><td><code>SecuritySystemZoneState.Faulted</code> פעיל</td></tr>
+      <tr><td>גלאי Closed</td><td><code>Faulted</code> לא פעיל</td></tr>
+      <tr><td>מחיצה דרוכה</td><td><code>SecuritySystemState.ArmedAway</code></td></tr>
+      <tr><td>מחיצה מנוטרלת</td><td><code>SecuritySystemState.Disarmed</code></td></tr>
+      <tr><td>מחיצה באזעקה</td><td><code>SecuritySystemAlarmType.Burglary</code> פעיל</td></tr>
+    </table>
+  </section>
+
+  <!-- ===== A ===== -->
+  <section id="a">
+    <h2><span class="num">א</span> הוסף לפרויקט את 3 הקבצים שלנו</h2>
+    <p>מהתיקייה <code>driver/src/</code> הוסף לפרויקט הדוגמה (קליק-ימני על הפרויקט → Add → Existing Item):</p>
+    <p><span class="file">ParadoxProtocol.cs</span><span class="file">Prt3Engine.cs</span><span class="file">ParadoxTcpTransport.cs</span></p>
+    <div class="note"><b>ℹ תאימות</b>
+      הם ב-namespace <code>Mila.Paradox.Prt3</code>, לא תלויים ב-SDK, ולוגיקתם בדוקה ב-22 בדיקות.
+      משתמשים ב-<code>System.Net.Sockets</code> ו-<code>System.Threading</code> — עובד על CP4-R (4-Series).
+      אם הפלטפורמה מתלוננת, אמיר ל-<code>CrestronSockets</code>.</div>
+  </section>
+
+  <!-- ===== B ===== -->
+  <section id="b">
+    <h2><span class="num">ב</span> ערוך את <code>SecuritySystemDriverIP.cs</code></h2>
+    <p>בסוף <code>Initialize(IPAddress ipAddress, int port)</code> (אחרי <code>InitializeKeypad();</code>), הוסף:</p>
+<pre class="code">    InitializeKeypad();
+
+<span class="add">    // ↓↓↓ הוסף: הפעלת מנוע ה-PRT3 עם היעד שהוגדר ב-Crestron Home
+    _securitySystemProtocol.StartEngine(ipAddress.ToString(), port);</span></pre>
+    <p>ודא שרשימת היכולות כוללת Zones (בגרסת IP זה כבר כך):</p>
+<pre class="code">List&lt;SecuritySystemCapabilities&gt; CapabilityList = new List&lt;SecuritySystemCapabilities&gt;
+{
+    SecuritySystemCapabilities.DirectControl,
+    SecuritySystemCapabilities.KeypadEmulation,
+    SecuritySystemCapabilities.Zones          <span class="cm">// ← לאפשר גלאים</span>
+};</pre>
+  </section>
+
+  <!-- ===== C ===== -->
+  <section id="c">
+    <h2><span class="num">ג</span> ערוך את <code>SecuritySystemProtocol.cs</code> (הלב)</h2>
+    <p>שמור על כל אזור ה-Keypad ומחלקות ה-Args כמו שהם. בצע את ג.1–ג.6:</p>
+
+    <h3>ג.1 — using בראש הקובץ</h3>
+<pre class="code">using Mila.Paradox.Prt3;</pre>
+
+    <h3>ג.2 — שדות (ב-#region Fields)</h3>
+<pre class="code"><span class="cm">// ==== שילוב Paradox PRT3 ====</span>
+private Prt3Engine _engine;
+private readonly Dictionary&lt;int, SecuritySystemZone&gt; _zoneMap = new Dictionary&lt;int, SecuritySystemZone&gt;();
+private readonly Dictionary&lt;int, SecuritySystemArea&gt; _areaMap = new Dictionary&lt;int, SecuritySystemArea&gt;();
+
+<span class="cm">// &gt;&gt;&gt; ערוך כאן: אילו גלאים ומחיצות לנטר, וקוד המשתמש &lt;&lt;&lt;</span>
+private static readonly int[] MonitoredZones = { 1, 2, 3, 4, 5, 6, 7, 8 };
+private static readonly int[] MonitoredAreas = { 1 };
+private const string UserPin = "1234";</pre>
+
+    <h3>ג.3 — מתודת ההפעלה + יוצרי Zone/Area + מטפלי אירועי המנוע</h3>
+<pre class="code"><span class="cm">/// מופעל מהדרייבר עם Host/Port. יוצר Zones/Areas ומתחיל polling.</span>
+public void StartEngine(string host, int port)
+{
+    foreach (var a in MonitoredAreas) CreateArea(a);
+    var firstArea = MonitoredAreas.Length &gt; 0 ? MonitoredAreas[0] : 1;
+    foreach (var z in MonitoredZones) CreateZone(z, firstArea);
+
+    var cfg = new Prt3EngineConfig
+    {
+        Zones = new List&lt;int&gt;(MonitoredZones),
+        Areas = new List&lt;int&gt;(MonitoredAreas),
+        PollIntervalMs = 400
+    };
+    _engine = new Prt3Engine(new ParadoxTcpTransport(host, port), cfg) { Logger = LogMessage };
+    _engine.ZoneChanged       += OnEngineZoneChanged;
+    _engine.AreaChanged       += OnEngineAreaChanged;
+    _engine.ConnectionChanged += (s, connected) =&gt; ConnectionChanged(connected);
+    _engine.Start();
+    LogMessage(string.Format("Paradox PRT3 engine started -&gt; {0}:{1}", host, port));
+}
+
+private void CreateArea(int index)
+{
+    var states = new List&lt;SecuritySystemState&gt;
+        { SecuritySystemState.ArmedAway, SecuritySystemState.ArmedStay, SecuritySystemState.Disarmed };
+    var alarms = new List&lt;SecuritySystemAlarmType&gt;
+        { SecuritySystemAlarmType.Burglary, SecuritySystemAlarmType.Fire, SecuritySystemAlarmType.Alarm };
+    var cmds = new List&lt;SecuritySystemAreaCommand&gt;
+    {
+        new SecuritySystemAreaCommand(1, SecuritySystemCommandType.Disarm, true),
+        new SecuritySystemAreaCommand(2, SecuritySystemCommandType.Away,   true),
+        new SecuritySystemAreaCommand(3, SecuritySystemCommandType.Stay,   true)
+    };
+    var area = new SecuritySystemArea("Area " + index, index, states.AsReadOnly(),
+        alarms.AsReadOnly(), cmds.AsReadOnly(), this);
+    area.SecuritysystemAreaStateChangedEvent  += OnSecuritysystemAreaStateChangedEvent;
+    area.SecuritysystemAlarmStateChangedEvent += OnSecuritysystemAlarmStateChangedEvent;
+    _areas.Add(area);
+    _areaMap[index] = area;
+    var h = AreaListChanged;
+    if (h != null) h(this, new ListChangedEventArgs&lt;ISecuritySystemArea&gt;(ListChangedAction.Added, null, area, _areas.Count - 1));
+}
+
+private void CreateZone(int index, int areaIndex)
+{
+    var zone = new SecuritySystemZone("Zone " + index, index, areaIndex);
+    _zones.Add(zone);
+    _zoneMap[index] = zone;
+    var h = ZoneListChanged;
+    if (h != null) h(this, new ListChangedEventArgs&lt;ISecuritySystemZone&gt;(ListChangedAction.Added, null, zone, _zones.Count - 1));
+}
+
+private void OnEngineZoneChanged(object sender, ZoneChangedEventArgs e)
+{
+    SecuritySystemZone zone;
+    if (_zoneMap.TryGetValue(e.Zone, out zone))
+        zone.SetActiveState(SecuritySystemZoneState.Faulted, e.IsMotion); <span class="cm">// תנועה/פתוח = Faulted</span>
+}
+
+private void OnEngineAreaChanged(object sender, AreaChangedEventArgs e)
+{
+    SecuritySystemArea area;
+    if (!_areaMap.TryGetValue(e.Area, out area)) return;
+    if (e.Arm == ArmState.Armed)         area.SetArmedMode(SecuritySystemCommandType.Away);
+    else if (e.Arm == ArmState.Disarmed) area.SetArmedMode(SecuritySystemCommandType.Disarm);
+    area.SetAlarmExternal(SecuritySystemAlarmType.Burglary, e.Alarm == AlarmState.InAlarm);
+}</pre>
+
+    <h3>ג.4 — החלף את גוף <code>DataHandler</code></h3>
+<pre class="code">public override void DataHandler(string rx)
+{
+    switch (rx)
+    {
+        case "InitializationComplete": ConnectionChanged(true);  break;
+        case "IsOffline":              ConnectionChanged(false); break;
+    }
+}</pre>
+    <p>(אפשר למחוק את <code>CreateFakeSecruritySystemArea</code> / <code>CreateFakeSecuritySystemZone</code> — לא בשימוש.)</p>
+
+    <h3>ג.5 — החלף את <code>ExecuteSecurityCommands</code> (דריכה/נטרול אמיתית)</h3>
+<pre class="code">public SecuritySystemOperationalResult ExecuteSecurityCommands(int commandIndex, List&lt;int&gt; areaIndexes, string password)
+{
+    SecuritySystemAreaCommand cmd = null;
+    foreach (var c in _securitySystem.GetAvailableAreaCommands())
+        if (c.Index == commandIndex) cmd = c;
+
+    var code = SecuritySystemOperationalResultCode.Success;
+    if (cmd == null)
+        code = SecuritySystemOperationalResultCode.InvalidIdParameters;
+    else if (_engine != null)
+    {
+        var pin = string.IsNullOrEmpty(password) ? UserPin : password;
+        foreach (var areaIndex in areaIndexes)
+        {
+            switch (cmd.CommandType)
+            {
+                case SecuritySystemCommandType.Disarm:    _engine.Disarm(areaIndex, pin); break;
+                case SecuritySystemCommandType.Away:
+                case SecuritySystemCommandType.ForceAway: _engine.Arm(areaIndex, pin, ArmMode.Regular); break;
+                case SecuritySystemCommandType.Stay:
+                case SecuritySystemCommandType.ForceStay: _engine.Arm(areaIndex, pin, ArmMode.Stay); break;
+            }
+        }
+    }
+
+    var result = new SecuritySystemOperationalResult(1)
+    {
+        CommandType       = cmd != null ? cmd.CommandType : SecuritySystemCommandType.Disarm,
+        TargetComponentId = areaIndexes,
+        Result            = code
+    };
+    var handler = SystemCommandResult;
+    if (handler != null) handler(this, new SecuritySystemCommandResultEventArgs { CommandResult = result });
+    return result; <span class="cm">// מצב הדריכה בפועל יתעדכן כשה-polling של RA יזהה אותו</span>
+}</pre>
+
+    <h3>ג.6 — עצור את המנוע ב-<code>Dispose</code></h3>
+    <p>בתחילת <code>Dispose()</code> הוסף:</p>
+<pre class="code"><span class="add">if (_engine != null) _engine.Stop();</span></pre>
+  </section>
+
+  <!-- ===== D ===== -->
+  <section id="d">
+    <h2><span class="num">ד</span> הוסף מתודה פומבית ל-<code>SecuritySystemZone.cs</code></h2>
+    <p>בתוך המחלקה (למשל אחרי <code>Poll()</code>):</p>
+<pre class="code"><span class="cm">/// נקרא מהמנוע: מסמן/מסיר מצב זון (Faulted = תנועה/פתוח).</span>
+public void SetActiveState(SecuritySystemZoneState state, bool active)
+{
+    UpdateActiveState(state, active);
+}</pre>
+  </section>
+
+  <!-- ===== E ===== -->
+  <section id="e">
+    <h2><span class="num">ה</span> הוסף שתי מתודות ל-<code>SecuritySystemArea.cs</code></h2>
+<pre class="code"><span class="cm">/// נקרא מהמנוע: קובע מצב דריכה לפי סוג פקודה.</span>
+public void SetArmedMode(SecuritySystemCommandType commandType)
+{
+    UpdateArmingState(commandType);
+}
+
+<span class="cm">/// נקרא מהמנוע: מסמן/מסיר אזעקה על המחיצה.</span>
+public void SetAlarmExternal(SecuritySystemAlarmType type, bool active)
+{
+    UpdateAlarmState(type, active);
+}</pre>
+  </section>
+
+  <!-- ===== F ===== -->
+  <section id="f">
+    <h2><span class="num">ו</span> הפוך את <code>SampleTransport.cs</code> לפסיבי</h2>
+    <p>המנוע שלנו פותח את הסוקט האמיתי, לכן תעבורת ה-SDK חייבת להישאר פסיבית (אחרת ייפתחו שני חיבורים).
+    החלף את <code>Start()</code>:</p>
+<pre class="code">public override void Start()
+{
+    base.Start();
+    var handler = DataHandler;
+    if (handler != null) handler("InitializationComplete");
+    <span class="cm">// אין SendTransportData — הנתונים האמיתיים מגיעים ממנוע ה-PRT3.</span>
+}</pre>
+  </section>
+
+  <!-- ===== G ===== -->
+  <section id="g">
+    <h2><span class="num">ז</span> בנייה, הגדרות ותקלות</h2>
+    <h3>בנייה</h3>
+    <p><code>Build → Release</code>. חבילת ManifestUtil תיצור את ה-<code>.pkg</code> תחת <code>bin\Release</code>.</p>
+
+    <h3>הגדרות שכדאי לשנות</h3>
+    <table>
+      <tr><th>הגדרה</th><th>מיקום</th><th>מה</th></tr>
+      <tr><td><code>MonitoredZones</code></td><td>ג.2</td><td>מספרי הגלאים לנטר</td></tr>
+      <tr><td><code>MonitoredAreas</code></td><td>ג.2</td><td>מספרי המחיצות</td></tr>
+      <tr><td><code>UserPin</code></td><td>ג.2</td><td>קוד לדריכה/נטרול</td></tr>
+      <tr><td>Host / Port</td><td>Crestron Home</td><td>אוטומטי — מהגדרת ההתקן</td></tr>
+    </table>
+
+    <div class="warn"><b>⚠ אם משהו לא מתקמפל</b>
+      זה צפוי בגרסה ראשונה. שלח לי את הודעת השגיאה המדויקת מ-Visual Studio ואתקן.
+      הנקודה היחידה תלוית-פלטפורמה: <code>System.Net.Sockets</code> בתעבורה — אם CP4-R לא אוהב אותה,
+      אחליף ל-<code>Crestron.SimplSharp.CrestronSockets</code> (אותה לוגיקה).</div>
+
+    <div class="tip"><b>✓ אחרי שמתקמפל</b>
+      טען את ה-<code>.pkg</code> ל-Crestron Home, מפה את הגלאים לחדרים, ובנה את אוטומציית תנועה→אור→טיימר
+      (Auto-Off של החדר). פירוט בפרק 7–8 של המדריך הראשי.</div>
+  </section>
+
+  <footer>מדריך זה + הקוד המלא נמצאים ב-repository, ענף <code>claude/crestron-paradox-integration-t1ufg9</code> (<code>driver/graft/</code>)</footer>
+</div>
+</body>
+</html>
