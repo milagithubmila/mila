@@ -66,6 +66,9 @@ namespace Mila.Paradox.Prt3
         public event EventHandler<AreaChangedEventArgs> AreaChanged;
         public event EventHandler<bool> ConnectionChanged; // true=connected
 
+        /// <summary>הוק לוג אופציונלי (בדרייבר Crestron: engine.Logger = LogMessage).</summary>
+        public Action<string> Logger;
+
         public Prt3Engine(ITransport transport, Prt3EngineConfig cfg)
         {
             _transport = transport;
