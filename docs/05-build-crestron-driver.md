@@ -46,6 +46,28 @@
 > **אין צורך** לערוך `HintPath` או להריץ ManifestUtil ידנית — חבילות ה-NuGet
 > מטפלות בהכל. (זו הדרך המודרנית; מדריכים ישנים מתארים DLL ידני — התעלם מהם.)
 
+## ⭐ המסלול הבטוח לבנייה עצמאית — להתחיל מהדוגמה הרשמית
+קובץ אחד (`ParadoxPrt3SecurityDriver.cs`) מתחבר ל-SDK, וחתימות ה-SDK משתנות
+בין גרסאות. במקום לנחש — מתחילים מדוגמת ה-Security הרשמית ושותלים בה את הקוד:
+
+1. השג את דוגמת ה-Security מ-`Samples.zip` של ה-SDK. קבצים:
+   `SecuritySystemDriverIP.cs`, `SecuritySystemArea.cs`.
+2. פתח ובנה את פרויקט הדוגמה כמו שהוא — ודא שהוא מתקמפל.
+3. הוסף לפרויקט הדוגמה את 3 הקבצים חסרי-התלות שלי:
+   `ParadoxProtocol.cs`, `Prt3Engine.cs`, `ParadoxTcpTransport.cs`
+   (Right-click project → Add → Existing Item).
+4. בתוך ה-protocol class של הדוגמה: צור `Prt3Engine`, הירשם לאירועיו, וחבר
+   אותם למתודות ה-Area/Zone — לפי **"מפת השתילה"** שבראש
+   `ParadoxPrt3SecurityDriver.cs` (משמש כדף-עזר):
+   - `ZoneChanged → Open/Closed` → עדכון מצב ה-Zone.
+   - `AreaChanged → Armed/Disarmed/InAlarm` → עדכון ArmingState / אזעקה.
+   - Arm/Disarm מ-Crestron → `engine.Arm()/Disarm()`.
+5. שנה את שם הפרויקט ל-`Mila_SecuritySystem_Paradox_PRT3_IP`, בנה Release, קבל `.pkg`.
+
+> שמות מאומתים (SDK v20+): namespace `Crestron.RAD.DeviceTypes.SecuritySystem`,
+> ממשקים `ISecuritySystem` / `ISecuritySystemArea`, בסיס `ABaseDriverProtocol`.
+> החתימות המדויקות — מקובץ הדוגמה שלך.
+
 ## מבנה הקוד
 | קובץ | תלות SDK | הערה |
 |------|:--------:|------|

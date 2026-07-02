@@ -336,12 +336,46 @@
         <code>driver/bin/Release/…</code>, בשם <code>Mila_SecuritySystem_Paradox_PRT3_IP.pkg</code>.
         זה הקובץ שתטען ל-Crestron Home (פרק 7).</li>
     </ol>
+    <div class="note"><b class="tag">ℹ שים לב — שני חלקים</b>
+      השלבים שלמעלה הם זרימת העבודה הכללית של Visual Studio. כדי שהחיבור ל-Crestron Home (מצבי גלאי/מחיצה) יעבוד
+      מדויק מול גרסת ה-SDK שלך — בצע את <b>"המסלול הבטוח"</b> שמיד למטה. זה החלק היחיד שדורש ממך כתיבה, והוא קצר.</div>
 
-    <div class="warn"><b class="tag">⚠ אם הבנייה נכשלת עם שגיאת "Crestron.RAD..."</b>
-      קובץ אחד (<code>ParadoxPrt3SecurityDriver.cs</code>) הוא שכבת החיבור ל-SDK, וחתימות ה-SDK משתנות בין גרסאות.
-      אם יש שגיאות קומפילציה שם — זה השלב היחיד שדורש עין של מתכנת: להתאים את שמות המתודות מול הדוגמה הרשמית
-      (<b>Samples → Security</b> ב-SDK). שאר הקבצים (הפרוטוקול, המנוע, התעבורה) בנויים להתקמפל חלק.
-      זו נקודה טובה למסור למתכנת (אפשרות ב').</div>
+    <h3>⭐ המסלול הבטוח לבנייה עצמאית — להתחיל מהדוגמה הרשמית</h3>
+    <div class="tip"><b class="tag">למה זה חשוב</b>
+      קובץ אחד — <code>ParadoxPrt3SecurityDriver.cs</code> — מתחבר ל-SDK, וחתימות ה-SDK משתנות מעט בין גרסאות.
+      במקום לנחש אותן, <b>מתחילים מקובץ הדוגמה הרשמי של Crestron</b> (שמתקמפל מושלם בגרסה שלך) ושותלים בו את הקוד שלי.
+      כך אתה בונה לבד בביטחון מלא.</div>
+    <ol class="steps">
+      <li><b>השג את דוגמת ה-Security של ה-SDK.</b> היא נמצאת בחבילת הדוגמאות של ה-SDK
+        (<code>Samples.zip</code> → תיקיית Security). קובצי המפתח:
+        <code>SecuritySystemDriverIP.cs</code> ו-<code>SecuritySystemArea.cs</code>.</li>
+      <li><b>פתח את פרויקט הדוגמה</b> בוויז'ואל סטודיו ובנה אותו כמו שהוא — ודא שהוא מתקמפל (Build succeeded).
+        זו נקודת הבסיס הבטוחה שלך.</li>
+      <li><b>הוסף לפרויקט הדוגמה את 3 הקבצים שלי</b> (חסרי-תלות ב-SDK, מתקמפלים תמיד):
+        <table>
+          <tr><th>קובץ</th><th>תפקיד</th></tr>
+          <tr><td><code>ParadoxProtocol.cs</code></td><td>בניית/פענוח פקודות PRT3</td></tr>
+          <tr><td><code>Prt3Engine.cs</code></td><td>מנוע ה-polling + אירועי שינוי</td></tr>
+          <tr><td><code>ParadoxTcpTransport.cs</code></td><td>חיבור TCP לממיר</td></tr>
+        </table>
+        (גרירה לפרויקט: קליק-ימני על הפרויקט → Add → Existing Item.)</li>
+      <li><b>שתול את המנוע ב-protocol class של הדוגמה.</b> בתוך המחלקה של <code>SecuritySystemDriverIP</code>:
+        צור <code>Prt3Engine</code>, הרשם לאירועים שלו, וחבר אותם למתודות ה-Area/Zone של הדוגמה — לפי
+        <b>"מפת השתילה"</b> שכתובה בראש הקובץ <code>ParadoxPrt3SecurityDriver.cs</code> שלי (הוא משמש כדף-עזר בלבד):
+        <table>
+          <tr><th>אצלי (המנוע)</th><th>בדוגמה (מה לקרוא)</th></tr>
+          <tr><td><code>ZoneChanged → Open/Closed</code></td><td>עדכון מצב ה-Zone ב-Area</td></tr>
+          <tr><td><code>AreaChanged → Armed/Disarmed</code></td><td>עדכון ArmingState של ה-Area</td></tr>
+          <tr><td><code>AreaChanged → InAlarm</code></td><td>הפעלת דיווח אזעקה של ה-Area</td></tr>
+          <tr><td>Arm/Disarm מ-Crestron</td><td>קריאה ל-<code>engine.Arm()/Disarm()</code></td></tr>
+        </table>
+      </li>
+      <li><b>שנה את שם הפרויקט</b> ל-<code>Mila_SecuritySystem_Paradox_PRT3_IP</code> (מוסכמת השמות של Crestron),
+        בנה ב-Release, וקבל את ה-<code>.pkg</code>.</li>
+    </ol>
+    <div class="note"><b class="tag">ℹ שלושת הקבצים חסרי-התלות כבר בדוקים</b>
+      הלוגיקה שלהם מאומתת ב-22 בדיקות (ה-Python). רק "מפת השתילה" (5–10 שורות חיבור) מבוצעת מול הדוגמה שלך —
+      זה כל מה שנשאר לך לכתוב.</div>
 
     <div class="danger"><b class="tag">⚠ טעינת דרייבר לא-מוסמך</b>
       חלק ממערכות Crestron Home מקבלות רק דרייברים מאושרים מהמאגר. אם ה-Setup App מסרב לטעון דרייבר עצמי —
