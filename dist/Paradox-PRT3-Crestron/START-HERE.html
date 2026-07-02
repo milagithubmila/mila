@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>START HERE — בניית דרייבר Paradox PRT3 ל-Crestron</title>
+<style>
+  :root{--card:#171c2e;--card2:#1f2540;--ink:#e9ecf5;--muted:#a7b0c8;--brand:#4f8cff;--brand2:#22d3a7;
+    --warn:#ffb020;--danger:#ff5d6c;--ok:#22c55e;--line:#2a3150;--code:#0b0e18;--radius:14px;}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c1020,#0f1320 220px);color:var(--ink);
+    font-family:"Segoe UI",Arial,sans-serif;line-height:1.8;font-size:16.5px}
+  .wrap{max-width:1000px;margin:0 auto;padding:30px 20px 80px}
+  header.hero{background:radial-gradient(1000px 260px at 85% -40%,rgba(79,140,255,.22),transparent),var(--card);
+    border:1px solid var(--line);border-radius:20px;padding:30px 32px;margin-bottom:24px}
+  header.hero h1{margin:0 0 6px;font-size:26px}
+  header.hero p{margin:0;color:var(--muted);font-size:16px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px}
+  section h2{margin:0 0 8px;font-size:21px;display:flex;align-items:center;gap:11px}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;
+    background:linear-gradient(135deg,var(--brand),#6aa6ff);color:#06122c;font-weight:800;font-size:16px;flex:none}
+  section h3{margin:16px 0 6px;font-size:17px;color:#dfe6fb}
+  p{margin:9px 0}
+  code{background:var(--code);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-family:Consolas,monospace;
+    font-size:13px;color:#7fd1ff;direction:ltr;display:inline-block}
+  .path{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:9px;
+    padding:9px 13px;font-family:Consolas,monospace;font-size:13px;color:#ffd98a;margin:8px 0;overflow-x:auto;white-space:pre}
+  .tree{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:11px;
+    padding:15px 17px;font-family:Consolas,monospace;font-size:12.5px;color:#cfe0ff;white-space:pre;overflow-x:auto;line-height:1.6;margin:12px 0}
+  .tree .r{color:#ffd98a}.tree .a{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px;border-radius:9px;overflow:hidden}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:right;vertical-align:top}
+  th{background:var(--card2);color:#dfe6fb}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  .box{border-radius:11px;padding:13px 16px;margin:14px 0;border:1px solid var(--line)}
+  .tip{background:rgba(34,211,167,.08);border-color:rgba(34,211,167,.35)}
+  .note{background:rgba(79,140,255,.08);border-color:rgba(79,140,255,.35)}
+  .warn{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.4)}
+  .danger{background:rgba(255,93,108,.09);border-color:rgba(255,93,108,.45)}
+  .agent{background:rgba(79,140,255,.06);border:1px dashed rgba(79,140,255,.5);border-radius:12px;padding:16px 18px;margin:14px 0}
+  .box b,.agent b{display:block;margin-bottom:2px}
+  .tip b{color:var(--brand2)} .note b{color:var(--brand)} .warn b{color:var(--warn)} .danger b{color:var(--danger)} .agent b{color:var(--brand)}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+  ol.steps>li{counter-increment:s;position:relative;padding:3px 42px 16px 0}
+  ol.steps>li:before{content:counter(s);position:absolute;right:0;top:0;width:30px;height:30px;border-radius:8px;
+    background:var(--card2);border:1px solid var(--brand);color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center}
+  ol.steps>li:not(:last-child):after{content:"";position:absolute;right:14px;top:32px;bottom:0;width:2px;background:linear-gradient(var(--brand),transparent)}
+  .en{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
+    font-family:Consolas,monospace;font-size:13px;color:#d7e3ff;white-space:pre-wrap;line-height:1.55;margin:10px 0}
+  footer{color:var(--muted);text-align:center;font-size:12.5px;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>START HERE — בניית דרייבר Paradox PRT3 ל-Crestron Home</h1>
+    <p>חבילה מוכנה עבור סוכן Claude ששולט במחשב. המטרה: לבנות את קובץ ה-<code>.pkg</code> ב-Visual Studio.</p>
+  </header>
+
+  <section>
+    <h2><span class="num">🎯</span> המשימה בקצרה</h2>
+    <p>יש להטמיע את קבצי הדרייבר של Paradox בתוך פרויקט הדוגמה של Crestron הקיים במחשב, לפתוח פרויקט מודרני,
+    ולבנות <code>.pkg</code>. הלוגיקה כבר כתובה — צריך רק להעתיק קבצים, לפתוח, ולבנות.</p>
+    <div class="agent"><b>◆ Agent task summary (English)</b>
+<div class="en">GOAL: Produce the Crestron driver .pkg for the Paradox PRT3 security driver.
+CONTEXT: Visual Studio 2026 is installed. The user's repo is cloned locally and
+contains a folder named "Crestron SDK Folder" with Crestron's Security System
+IP sample (SecuritySystemDriverIP.cs, SecuritySystemProtocol.cs, ...,
+SecuritySystemKeypad.cs, DriverData.json, and a legacy .csproj).
+The legacy .csproj is a .NET CF 3.5 / SmartDevice project and CANNOT be opened
+in modern VS (shows "Unsupported"). Do NOT open it.
+DO: copy this package's 9 files into "Crestron SDK Folder", open the modern
+"Paradox_PRT3_IP.csproj", restore NuGet, build Release, locate the .pkg.
+On known build errors, apply the fixes in the "Build errors" table, then rebuild.
+Report the final .pkg path or the exact remaining errors.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">📦</span> תוכן החבילה (ה-ZIP)</h2>
+<div class="tree">Paradox-PRT3-Crestron\
+├── START-HERE.html                       ← הקובץ הזה
+└── replace-in-CrestronSDKFolder\         ← 9 קבצים להעתקה
+    ├── <span class="r">SecuritySystemProtocol.cs</span>          (החלף)
+    ├── <span class="r">SecuritySystemArea.cs</span>              (החלף)
+    ├── <span class="r">SecuritySystemZone.cs</span>              (החלף)
+    ├── <span class="r">SecuritySystemDriverIP.cs</span>          (החלף)
+    ├── <span class="r">SampleTransport.cs</span>                 (החלף)
+    ├── <span class="a">ParadoxProtocol.cs</span>                 (הוסף)
+    ├── <span class="a">Prt3Engine.cs</span>                      (הוסף)
+    ├── <span class="a">ParadoxTcpTransport.cs</span>             (הוסף)
+    └── <span class="a">Paradox_PRT3_IP.csproj</span>             (הוסף — קובץ הפרויקט לפתיחה)</div>
+    <p><span style="color:#ffd98a">כתום = החלפה (דרוס קיים)</span> · <span style="color:#86efac">ירוק = הוספה (קובץ חדש)</span></p>
+  </section>
+
+  <section>
+    <h2><span class="num">1</span> אתר את תיקיית היעד במחשב</h2>
+    <p>בתוך תיקיית ה-repo המשוכפל של המשתמש, אתר את התיקייה:</p>
+    <div class="path">mila-claude-crestron-paradox-integration-t1ufg9\Crestron SDK Folder\</div>
+    <p>זו התיקייה שמכילה את <code>SecuritySystemDriverIP.cs</code>, <code>SecuritySystemKeypad.cs</code>,
+    <code>DriverData.json</code> וכו'.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> העתק את 9 הקבצים אל תיקיית היעד</h2>
+    <p>העתק את כל 9 הקבצים מ-<code>replace-in-CrestronSDKFolder\</code> אל <code>Crestron SDK Folder\</code>.
+    5 מהם ידרסו קבצים קיימים (אשר דריסה); 4 חדשים.</p>
+    <div class="note"><b>ℹ הקבצים הבאים נשארים כמו שהם (לא נוגעים):</b>
+      <code>SecuritySystemKeypad.cs</code>, <code>DriverData.json</code>, <code>SendTransportData.cs</code>,
+      <code>Properties\AssemblyInfo.cs</code> (אם קיים).</div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> נטרל את קובץ הפרויקט הישן</h2>
+    <div class="danger"><b>⚠ אל תפתח את <code>SecuritySystem_Crestron_SampleDriverModel_IP.csproj</code> הישן</b>
+      הוא בפורמט לא נתמך. כדי למנוע בלבול — העבר אותו לתיקייה זמנית (או שנה סיומת ל-<code>.csproj.old</code>).
+      אנחנו עובדים רק עם <code>Paradox_PRT3_IP.csproj</code> החדש.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> פתח, שחזר NuGet, ובנה</h2>
+    <ol class="steps">
+      <li>ב-Visual Studio: אם פתוח "Create a new project" — סגור אותו.</li>
+      <li><b>File → Open → Project/Solution</b> → בחר את
+        <code>Crestron SDK Folder\Paradox_PRT3_IP.csproj</code>.</li>
+      <li>אשר <b>Restore</b> ל-NuGet (מוריד את <code>Crestron.DeviceDrivers.DevKit</code> +
+        <code>Crestron.DeviceDrivers.ManifestUtil</code>).</li>
+      <li>שנה את הקונפיגורציה מ-<b>Debug</b> ל-<b>Release</b>.</li>
+      <li><b>Build → Build Solution</b> (<code>Ctrl+Shift+B</code>).</li>
+      <li>אם עברה הבנייה — אתר את ה-<code>.pkg</code>:
+        <div class="path">Crestron SDK Folder\bin\Release\  →  *.pkg</div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="num">🔧</span> שגיאות בנייה צפויות — ותיקון</h2>
+    <p>הקוד נכתב ללא קומפילציה מקומית, לכן ייתכנו שגיאות. להלן התיקונים המדויקים (הסוכן יכול לבצע ולבנות מחדש):</p>
+    <table>
+      <tr><th>שגיאה</th><th>תיקון</th></tr>
+      <tr>
+        <td><code>The type or namespace name 'Newtonsoft' could not be found</code></td>
+        <td>Manage NuGet Packages → Browse → התקן <code>Newtonsoft.Json</code> (13.x). בנה מחדש.</td>
+      </tr>
+      <tr>
+        <td><code>.NET Framework 4.7.2 ... not installed</code> / targeting pack חסר</td>
+        <td>פתח <code>Paradox_PRT3_IP.csproj</code>, שנה <code>&lt;TargetFramework&gt;net472&lt;/TargetFramework&gt;</code>
+            ל-<code>net48</code>. בנה מחדש.</td>
+      </tr>
+      <tr>
+        <td>שגיאות כפילות attributes (<code>duplicate 'AssemblyVersion'</code> וכו')</td>
+        <td>ב-csproj כבר יש <code>&lt;GenerateAssemblyInfo&gt;false&lt;/GenerateAssemblyInfo&gt;</code>.
+            אם עדיין — מחק את <code>Properties\AssemblyInfo.cs</code> הכפול.</td>
+      </tr>
+      <tr>
+        <td><code>System.Net.Sockets</code> / <code>TcpClient</code> לא נתמך על הפלטפורמה</td>
+        <td><b>עצור ודווח.</b> זה דורש החלפת התעבורה ל-<code>Crestron.SimplSharp.CrestronSockets</code> —
+            אבקש מהמפתח (Claude ב-repo) גרסה חלופית של <code>ParadoxTcpTransport.cs</code>.</td>
+      </tr>
+      <tr>
+        <td>שגיאות אחרות שאינן ברשימה</td>
+        <td><b>עצור, העתק את כל טקסט ה-Error List, ודווח.</b> אל תנחש תיקונים מבניים.</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">✅</span> קריטריון הצלחה + מה לדווח</h2>
+    <p><b>הצלחה:</b> נוצר קובץ <code>.pkg</code> תחת <code>bin\Release\</code> (למשל
+    <code>SecuritySystem_Crestron_SampleDriverModel_IP.pkg</code>).</p>
+    <p><b>לדווח בסוף:</b></p>
+    <ul>
+      <li>נתיב ה-<code>.pkg</code> שנוצר, או</li>
+      <li>אם נכשל: העתק מלא של ה-Error List + אילו תיקונים כבר בוצעו.</li>
+    </ul>
+    <div class="tip"><b>✓ אחרי הצלחה</b>
+      הצעד הבא (ידני, לא לסוכן): טעינת ה-<code>.pkg</code> ל-Crestron Home דרך Setup App, מיפוי הגלאים לחדרים,
+      ובניית אוטומציית תנועה→אור→טיימר.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">⚙</span> הגדרות אופציונליות</h2>
+    <p>בקובץ <code>SecuritySystemProtocol.cs</code>, בראש (#region Fields), ניתן לערוך:</p>
+    <table>
+      <tr><th>הגדרה</th><th>ברירת מחדל</th><th>משמעות</th></tr>
+      <tr><td><code>MonitoredZones</code></td><td><code>{1..8}</code></td><td>מספרי הגלאים לנטר</td></tr>
+      <tr><td><code>MonitoredAreas</code></td><td><code>{1}</code></td><td>מספרי המחיצות</td></tr>
+      <tr><td><code>UserPin</code></td><td><code>1234</code></td><td>קוד לדריכה/נטרול</td></tr>
+    </table>
+    <p>אפשר להשאיר ברירת מחדל ולבנות קודם.</p>
+  </section>
+
+  <footer>מקור הקבצים: repository <code>milagithubmila/mila</code>, ענף <code>claude/crestron-paradox-integration-t1ufg9</code>,
+  תחת <code>driver/graft/ready-IP/</code> ו-<code>driver/src/</code>.</footer>
+</div>
+</body>
+</html>
