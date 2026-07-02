@@ -34,10 +34,12 @@
   </PropertyGroup>
 
   <!-- חבילות ה-SDK של Crestron (ציבוריות ב-nuget.org).
-       עדכן את מספרי הגרסה לאחרונה הזמינה אם צריך. -->
+       התאם את הגרסה ל-SDK שהתקנת. עבור SDK v28.0000.0015 בחר את גרסת ה-NuGet
+       ה-28.x האחרונה (ב-Package Manager פשוט בחר "Latest"). המספר למטה הוא
+       ברירת מחדל שאפשר לעדכן. -->
   <ItemGroup>
-    <PackageReference Include="Crestron.DeviceDrivers.DevKit" Version="27.0.24" />
-    <PackageReference Include="Crestron.DeviceDrivers.ManifestUtil" Version="27.0.24" />
+    <PackageReference Include="Crestron.DeviceDrivers.DevKit" Version="28.*" />
+    <PackageReference Include="Crestron.DeviceDrivers.ManifestUtil" Version="28.*" />
   </ItemGroup>
 
 </Project>
