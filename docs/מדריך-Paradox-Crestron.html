@@ -271,24 +271,83 @@
 
   <!-- 5 -->
   <section id="build">
-    <h2><span class="num">5</span> בניית הדרייבר (קובץ <code>.pkg</code>)</h2>
-    <h3>דרישות מקדימות</h3>
-    <ul class="check">
-      <li>חשבון מפתחים ב-Crestron (Developer account)</li>
-      <li><b>Crestron Drivers SDK</b> — כולל ה-DLLים ו-<b>ManifestUtil.exe</b></li>
-      <li>Visual Studio 2019+ (netstandard2.0)</li>
-    </ul>
+    <h2><span class="num">5</span> בניית הדרייבר (קובץ <code>.pkg</code>) — מדריך מאפס</h2>
+    <p class="lead">הפרק הזה מניח ש<b>מעולם לא פתחת סביבת פיתוח</b>. נסביר כל מושג, מה להוריד, ומה ללחוץ — צעד אחר צעד.</p>
+
+    <div class="danger"><b class="tag">⚠ רגע — האם אתה חייב לעשות את זה בעצמך?</b>
+      "בניית דרייבר" היא פעולה של <b>מתכנת</b>. יש לך שלוש אפשרויות. קרא אותן לפני שתתחיל:</div>
+    <table>
+      <tr><th>אפשרות</th><th>למי מתאים</th><th>מאמץ</th></tr>
+      <tr><td><b>א. לבנות בעצמך</b><br><span class="pill opt">מפורט למטה</span></td>
+          <td>מי שמוכן ללמוד סביבת פיתוח בסיסית (כמה שעות פעם אחת)</td><td>בינוני</td></tr>
+      <tr><td><b>ב. למסור למתכנת Crestron</b><br><span class="pill ok">הכי מהיר</span></td>
+          <td>שולחים את תיקיית <code>driver/</code> לכל מתכנת/אינטגרטור Crestron — עבודה של ~30 דק' עבורו</td><td>נמוך</td></tr>
+      <tr><td><b>ג. פתרון בלי דרייבר</b></td>
+          <td>Raspberry Pi עם כלי ה-Python ששולט בתאורה ישירות (בלי Crestron Home בלולאה)</td><td>נמוך-בינוני</td></tr>
+    </table>
+    <p>אם בחרת <b>א'</b> — המשך לקרוא. אם <b>ב'</b> — דלג לפרק 7; המתכנת יחזיר לך קובץ <code>.pkg</code> מוכן.</p>
+
+    <h3>מילון מושגים קצר (לפני שמתחילים)</h3>
+    <table>
+      <tr><th>מושג</th><th>מה זה בעברית פשוטה</th></tr>
+      <tr><td><b>Visual Studio</b></td><td>התוכנה (עורך) שבה כותבים ובונים קוד. כמו "וורד" אבל למתכנתים. חינמית בגרסת Community.</td></tr>
+      <tr><td><b>Project / <code>.csproj</code></b></td><td>"תיקיית הפרויקט". קובץ ה-<code>.csproj</code> הוא ה"מתכון" שאומר לוויז'ואל סטודיו אילו קבצים ורכיבים שייכים לפרויקט. <b>כבר הכנתי לך אותו.</b></td></tr>
+      <tr><td><b>NuGet</b></td><td>"חנות תוספים" מובנית בוויז'ואל סטודיו. במקום להוריד קבצים ידנית — מתקינים "חבילה" בלחיצה, והיא מביאה את כל מה שצריך.</td></tr>
+      <tr><td><b>SDK</b></td><td>ערכת הרכיבים של Crestron לבניית דרייברים. מגיעה כ<b>חבילות NuGet</b> — לא צריך להתקין תוכנה נפרדת.</td></tr>
+      <tr><td><b>DLL</b></td><td>קובץ הפלט שנוצר כשבונים קוד. ביניים בדרך ל-<code>.pkg</code>.</td></tr>
+      <tr><td><b><code>.pkg</code></b></td><td>קובץ הדרייבר הסופי שטוענים ל-Crestron Home. <b>נוצר אוטומטית</b> בסוף הבנייה.</td></tr>
+      <tr><td><b>Build</b> (בנייה)</td><td>הפעולה שממירה את הקוד לתוצר. לחיצת כפתור אחת.</td></tr>
+    </table>
+    <div class="tip"><b class="tag">✓ בשורה טובה</b>
+      בזכות ה-SDK המודרני (חבילות NuGet), <b>לא צריך לערוך שום <code>HintPath</code> או להריץ ManifestUtil ידנית</b>.
+      מתקינים 2 חבילות, לוחצים Build, וה-<code>.pkg</code> יוצא לבד. זה כל הסיפור.</div>
+
+    <h3>שלב 0 — מה להוריד</h3>
+    <table>
+      <tr><th>מה</th><th>מאיפה</th><th>עלות</th></tr>
+      <tr><td><b>Visual Studio 2022 Community</b><br>(בהתקנה סמן את ה-Workload בשם <b>".NET desktop development"</b>)</td>
+          <td>visualstudio.microsoft.com</td><td>חינם</td></tr>
+      <tr><td><b>חשבון מפתחים ב-Crestron</b><br>(נדרש כדי להוריד את חבילת ה-Samples והתיעוד; חבילות ה-NuGet עצמן ציבוריות)</td>
+          <td>crestron.com → Developer / <a href="https://sdkcon78221.crestron.com/">sdkcon78221.crestron.com</a></td><td>חינם (הרשמה)</td></tr>
+    </table>
+    <div class="note"><b class="tag">ℹ הערה</b>
+      חבילות ה-NuGet של Crestron (בשלב 3) נמצאות ב-nuget.org הציבורי — אין צורך בהתחברות מיוחדת כדי להתקין אותן.
+      חשבון המפתחים נחוץ בעיקר לתיעוד, לדוגמאות, ולמסלול ההסמכה.</div>
+
+    <h3>שלב אחר שלב — בניית ה-<code>.pkg</code></h3>
     <ol class="steps">
-      <li><b>אמת את הליבה</b> — הרץ את בדיקות ה-Python (<code>python3 -m unittest test_paradox_prt3</code>). מחלקת
-        <code>ParadoxProtocol</code> ב-C# ממומשת לפי אותה התנהגות.</li>
-      <li><b>חבר References ל-SDK</b> — ב-<code>.csproj</code> עדכן את ה-<code>HintPath</code> ל-DLLים
-        <code>Crestron.RAD.Common</code> ו-<code>Crestron.RAD.DeviceTypes.Security</code>.</li>
-      <li><b>התאם את הקישור ל-SDK</b> — ב-<code>ParadoxPrt3SecurityDriver.cs</code> אמת את חתימות מחלקת הבסיס
-        מול גרסת ה-SDK שלך, ומפה את האירועים (<code>ZoneChanged</code>/<code>AreaChanged</code>) ל-API.</li>
-      <li><b>קמפל ב-Release</b> — הפלט הוא <code>Mila_SecuritySystem_Paradox_PRT3_IP.dll</code>.</li>
-      <li><b>הרץ ManifestUtil</b> — העתק את ה-DLL לתיקיית הכלי והרץ אותו. ייווצר קובץ <code>.pkg</code>.</li>
+      <li><b>התקן את Visual Studio 2022 Community.</b> בחלון ההתקנה (Workloads), סמן את
+        <b>".NET desktop development"</b> ולחץ Install. (התקנה חד-פעמית, ~15 דק'.)</li>
+      <li><b>פתח את הפרויקט שהכנתי.</b> בוויז'ואל סטודיו: <code>File → Open → Project/Solution</code>,
+        ונווט לקובץ <code>driver/Mila_SecuritySystem_Paradox_PRT3_IP.csproj</code> מתוך הקבצים שנתתי לך.</li>
+      <li><b>התקן את חבילות ה-SDK (NuGet).</b> בתפריט:
+        <code>Tools → NuGet Package Manager → Manage NuGet Packages for Solution</code>.
+        עבור ללשונית <b>Browse</b>, חפש והתקן (Install) את שתי החבילות:
+        <table>
+          <tr><th>שם החבילה</th><th>מה היא נותנת</th></tr>
+          <tr><td><code>Crestron.DeviceDrivers.DevKit</code></td><td>כל הרכיבים לבניית דרייבר (כולל ה-SDK)</td></tr>
+          <tr><td><code>Crestron.DeviceDrivers.ManifestUtil</code></td><td>יוצר את ה-<code>.pkg</code> אוטומטית בסוף הבנייה</td></tr>
+        </table>
+        <span class="pill opt">כבר מוגדרות בקובץ הפרויקט</span> — אם הן מותקנות אוטומטית בפתיחה (Restore), אפשר לדלג על שלב זה.</li>
+      <li><b>בחר מצב Release.</b> בסרגל העליון יש תיבה שכתוב בה <code>Debug</code> — שנה אותה ל-<b><code>Release</code></b>.</li>
+      <li><b>בנה.</b> תפריט <code>Build → Build Solution</code> (או <span class="kbd">Ctrl+Shift+B</span>).
+        חכה שיסתיים למטה יופיע <b>Build: 1 succeeded</b>.</li>
+      <li><b>קח את ה-<code>.pkg</code>.</b> הוא נוצר בתיקיית הפלט של הפרויקט:
+        <code>driver/bin/Release/…</code>, בשם <code>Mila_SecuritySystem_Paradox_PRT3_IP.pkg</code>.
+        זה הקובץ שתטען ל-Crestron Home (פרק 7).</li>
     </ol>
-    <div class="note"><b class="tag">ℹ מוסכמת שם</b>
+
+    <div class="warn"><b class="tag">⚠ אם הבנייה נכשלת עם שגיאת "Crestron.RAD..."</b>
+      קובץ אחד (<code>ParadoxPrt3SecurityDriver.cs</code>) הוא שכבת החיבור ל-SDK, וחתימות ה-SDK משתנות בין גרסאות.
+      אם יש שגיאות קומפילציה שם — זה השלב היחיד שדורש עין של מתכנת: להתאים את שמות המתודות מול הדוגמה הרשמית
+      (<b>Samples → Security</b> ב-SDK). שאר הקבצים (הפרוטוקול, המנוע, התעבורה) בנויים להתקמפל חלק.
+      זו נקודה טובה למסור למתכנת (אפשרות ב').</div>
+
+    <div class="danger"><b class="tag">⚠ טעינת דרייבר לא-מוסמך</b>
+      חלק ממערכות Crestron Home מקבלות רק דרייברים מאושרים מהמאגר. אם ה-Setup App מסרב לטעון דרייבר עצמי —
+      תצטרך את מסלול ההסמכה (פרק 6) או סיוע ממתקין Crestron מורשה. שווה לבדוק מול המערכת שלך מוקדם.</div>
+
+    <div class="note"><b class="tag">ℹ מוסכמת שם הקובץ</b>
       <code>&lt;Developer&gt;_&lt;DeviceType&gt;_&lt;Manufacturer&gt;_&lt;BaseModel&gt;_&lt;Communication&gt;</code> →
       <code>Mila_SecuritySystem_Paradox_PRT3_IP</code></div>
   </section>

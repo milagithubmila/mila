@@ -116,7 +116,7 @@ python3 -m unittest test_paradox_prt3 -v   # 22 passed
 | APR-PRT3 | מודול Printer/ASCII — חובה. **IP150 לבדו אינו מספיק** (פרוטוקול סגור) |
 | ממיר Serial↔Ethernet | לחיבור IP (Lantronix UDS/XPort, Moxa NPort, USR-TCP232) — אם לא מחברים טורי ישיר |
 | Crestron | CP4-R עם Crestron Home, וגישת **Setup App** |
-| לבניית הדרייבר | חשבון מפתחים ב-Crestron, **Crestron Drivers SDK**, Visual Studio, ManifestUtil |
+| לבניית הדרייבר | Visual Studio 2022 Community (חינם) + 2 חבילות NuGet של Crestron. ה-`.pkg` נוצר אוטומטית. מדריך מלא "מאפס" ב-`docs/05` ובפרק 5 של מדריך ה-HTML |
 
 > אם אין לך סביבת SDK של Crestron לקמפול — קבצי המקור כאן מלאים ומוכנים;
 > שלבי הבנייה והאריזה ל-`.pkg` מפורטים ב-`docs/05`.
