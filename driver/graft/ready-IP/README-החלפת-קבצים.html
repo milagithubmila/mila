@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הכל מוכן — החלפת קבצים ובנייה</title>
+<style>
+  :root{--card:#171c2e;--card2:#1f2540;--ink:#e9ecf5;--muted:#a7b0c8;--brand:#4f8cff;--brand2:#22d3a7;
+    --warn:#ffb020;--danger:#ff5d6c;--ok:#22c55e;--line:#2a3150;--code:#0b0e18;--radius:14px;}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c1020,#0f1320 220px);color:var(--ink);
+    font-family:"Segoe UI",Arial,sans-serif;line-height:1.8;font-size:16.5px}
+  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 80px}
+  header.hero{background:radial-gradient(1000px 260px at 85% -40%,rgba(34,211,167,.2),transparent),var(--card);
+    border:1px solid var(--line);border-radius:20px;padding:30px 32px;margin-bottom:24px}
+  header.hero h1{margin:0 0 6px;font-size:26px}
+  header.hero p{margin:0;color:var(--muted);font-size:16px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px}
+  section h2{margin:0 0 8px;font-size:21px;display:flex;align-items:center;gap:11px}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;
+    background:linear-gradient(135deg,var(--brand),#6aa6ff);color:#06122c;font-weight:800;font-size:17px;flex:none}
+  p{margin:9px 0}
+  code{background:var(--code);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-family:Consolas,monospace;
+    font-size:13.5px;color:#7fd1ff;direction:ltr;display:inline-block}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px;border-radius:9px;overflow:hidden}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:right;vertical-align:top}
+  th{background:var(--card2);color:#dfe6fb}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  .path{direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:9px;
+    padding:9px 13px;font-family:Consolas,monospace;font-size:13px;color:#ffd98a;margin:8px 0;overflow-x:auto;white-space:pre}
+  .box{border-radius:11px;padding:13px 16px;margin:14px 0;border:1px solid var(--line)}
+  .tip{background:rgba(34,211,167,.08);border-color:rgba(34,211,167,.35)}
+  .note{background:rgba(79,140,255,.08);border-color:rgba(79,140,255,.35)}
+  .warn{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.4)}
+  .danger{background:rgba(255,93,108,.09);border-color:rgba(255,93,108,.45)}
+  .box b{display:block;margin-bottom:2px}
+  .tip b{color:var(--brand2)} .note b{color:var(--brand)} .warn b{color:var(--warn)} .danger b{color:var(--danger)}
+  .repl{color:#ffd98a;font-weight:700} .add{color:#86efac;font-weight:700} .keep{color:var(--muted)}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+  ol.steps>li{counter-increment:s;position:relative;padding:3px 42px 16px 0}
+  ol.steps>li:before{content:counter(s);position:absolute;right:0;top:0;width:30px;height:30px;border-radius:8px;
+    background:var(--card2);border:1px solid var(--brand);color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center}
+  ol.steps>li:not(:last-child):after{content:"";position:absolute;right:14px;top:32px;bottom:0;width:2px;background:linear-gradient(var(--brand),transparent)}
+  footer{color:var(--muted);text-align:center;font-size:12.5px;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>הכל מוכן — רק להחליף קבצים ולבנות</h1>
+    <p>הכנתי את כל הקבצים ערוכים. אתה לא צריך לכתוב קוד — רק להעתיק ולבנות.</p>
+  </header>
+
+  <section>
+    <h2><span class="num">0</span> קודם — למה הפורמט הישן לא נפתח</h2>
+    <div class="danger"><b>⚠ ההודעה "Unsupported" צפויה</b>
+      פרויקט הדוגמה של Crestron הוא בפורמט ישן (.NET CF 3.5 / SmartDevice) ש-VS 2026 לא פותח.
+      לכן <b>לא נפתח את ה-.csproj הישן</b> — נשתמש בקובץ פרויקט מודרני חדש שהכנתי (<code>Paradox_PRT3_IP.csproj</code>).</div>
+  </section>
+
+  <section>
+    <h2><span class="num">1</span> עדכן את הקבצים מ-GitHub</h2>
+    <p>ב-Visual Studio: <b>Git</b> <span style="color:var(--brand)">←</span> <b>Pull</b> (או בטרמינל: <code>git pull</code>).
+    זה מוריד את כל הקבצים המוכנים שהכנתי.</p>
+    <div class="note"><b>ℹ אם קיבלת את הקבצים כצרופות בצ'אט</b> — פשוט שמור אותם ישירות לתיקיות המתאימות (טבלה למטה).</div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> העתק את הקבצים אל <code>Crestron SDK Folder</code></h2>
+    <p>העתק אל התיקייה <code>Crestron SDK Folder</code> (דרוס קבצים קיימים כשמתבקש):</p>
+    <table>
+      <tr><th>קובץ</th><th>מאיפה (ב-repo)</th><th>פעולה</th></tr>
+      <tr><td><code>SecuritySystemProtocol.cs</code></td><td><code>driver/graft/ready-IP/</code></td><td class="repl">החלף (דרוס)</td></tr>
+      <tr><td><code>SecuritySystemArea.cs</code></td><td><code>driver/graft/ready-IP/</code></td><td class="repl">החלף</td></tr>
+      <tr><td><code>SecuritySystemZone.cs</code></td><td><code>driver/graft/ready-IP/</code></td><td class="repl">החלף</td></tr>
+      <tr><td><code>SecuritySystemDriverIP.cs</code></td><td><code>driver/graft/ready-IP/</code></td><td class="repl">החלף</td></tr>
+      <tr><td><code>SampleTransport.cs</code></td><td><code>driver/graft/ready-IP/</code></td><td class="repl">החלף</td></tr>
+      <tr><td><code>ParadoxProtocol.cs</code></td><td><code>driver/src/</code></td><td class="add">הוסף (חדש)</td></tr>
+      <tr><td><code>Prt3Engine.cs</code></td><td><code>driver/src/</code></td><td class="add">הוסף</td></tr>
+      <tr><td><code>ParadoxTcpTransport.cs</code></td><td><code>driver/src/</code></td><td class="add">הוסף</td></tr>
+      <tr><td><code>Paradox_PRT3_IP.csproj</code></td><td><code>driver/graft/</code></td><td class="add">הוסף (קובץ פרויקט חדש)</td></tr>
+      <tr><td class="keep">SecuritySystemKeypad.cs</td><td class="keep">—</td><td class="keep">השאר כמו שהוא</td></tr>
+      <tr><td class="keep">SendTransportData.cs</td><td class="keep">—</td><td class="keep">השאר</td></tr>
+      <tr><td class="keep">DriverData.json</td><td class="keep">—</td><td class="keep">השאר</td></tr>
+      <tr><td class="keep">AssemblyInfo.cs</td><td class="keep">—</td><td class="keep">השאר</td></tr>
+    </table>
+    <div class="warn"><b>⚠ מחק/התעלם מה-.csproj הישן</b>
+      את הקובץ <code>SecuritySystem_Crestron_SampleDriverModel_IP.csproj</code> הישן — <b>אל תפתח</b>.
+      אפשר פשוט להתעלם ממנו (או להעביר אותו לתיקייה אחרת כדי לא להתבלבל).</div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> פתח את הפרויקט המודרני</h2>
+    <p>אם פתוח לך "Create a new project" — סגור אותו (X).</p>
+    <p><b>File</b> <span style="color:var(--brand)">←</span> <b>Open</b> <span style="color:var(--brand)">←</span> <b>Project/Solution</b>, ובחר:</p>
+    <div class="path">Crestron SDK Folder\Paradox_PRT3_IP.csproj</div>
+    <p>אשר <b>Restore</b> ל-NuGet אם מתבקש (מוריד את רכיבי ה-SDK).</p>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> בנה</h2>
+    <p>למעלה: ודא <b>Release</b>. ואז <b>Build</b> <span style="color:var(--brand)">←</span> <b>Build Solution</b> (<code>Ctrl+Shift+B</code>).</p>
+    <p>אם הצליח — ה-<code>.pkg</code> נוצר תחת <code>bin\Release\</code>.</p>
+
+    <div class="warn"><b>⚠ שגיאות בנייה? זה צפוי בפעם הראשונה</b>
+      פתח למטה <b>Error List</b>, העתק את הטקסט של השגיאות (או צלם), ושלח לי. אלה הדברים הסבירים ביותר:
+      <ul style="margin:8px 0">
+        <li><code>Newtonsoft.Json</code> לא נמצא → נוסיף חבילת NuGet.</li>
+        <li><code>System.Net.Sockets</code> לא נתמך → אמיר את התעבורה ל-CrestronSockets.</li>
+        <li><code>net472</code> targeting pack חסר → נשנה ל-<code>net48</code>.</li>
+      </ul>
+      אל תתקן לבד — שלח לי, וזה מהיר.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span> הגדרות שאולי תרצה לשנות (אופציונלי)</h2>
+    <p>בקובץ <code>SecuritySystemProtocol.cs</code>, בראש (ב-#region Fields):</p>
+    <table>
+      <tr><th>הגדרה</th><th>ברירת מחדל</th><th>מה</th></tr>
+      <tr><td><code>MonitoredZones</code></td><td>1–8</td><td>מספרי הגלאים לנטר</td></tr>
+      <tr><td><code>MonitoredAreas</code></td><td>1</td><td>מספרי המחיצות</td></tr>
+      <tr><td><code>UserPin</code></td><td>1234</td><td>קוד לדריכה/נטרול</td></tr>
+    </table>
+    <div class="tip"><b>✓ אפשר להשאיר כברירת מחדל</b> ולבנות קודם — נכוונן אחרי שזה עובד.</div>
+  </section>
+
+  <footer>כל הקבצים נמצאים ב-repository תחת <code>driver/graft/ready-IP/</code>, <code>driver/src/</code>, <code>driver/graft/</code></footer>
+</div>
+</body>
+</html>

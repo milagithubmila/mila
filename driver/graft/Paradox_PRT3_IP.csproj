@@ -1,0 +1,47 @@
+<!--
+  קובץ פרויקט מודרני (SDK-style) שמחליף את ה-.csproj הישן של דוגמת Crestron.
+
+  ── למה צריך אותו ──
+  פרויקט הדוגמה המקורי של Crestron הוא בפורמט ישן (.NET CF 3.5 / SmartDevice)
+  ש-Visual Studio 2022/2026 לא יכול לפתוח (הודעת "Unsupported"). הקובץ הזה הוא
+  פרויקט מודרני שקול, שמושך את רכיבי ה-SDK מ-NuGet — הדרך הרשמית היום.
+
+  ── איך משתמשים ──
+  1. העתק את הקובץ הזה אל תוך התיקייה "Crestron SDK Folder" (ליד קבצי הדוגמה).
+  2. ודא שגם 3 הקבצים שלנו (ParadoxProtocol.cs, Prt3Engine.cs,
+     ParadoxTcpTransport.cs) הועתקו לאותה תיקייה.
+  3. ב-Visual Studio: File → Open → Project/Solution → בחר את
+     "Paradox_PRT3_IP.csproj" (הזה!) — לא את ה-.csproj הישן.
+  4. אשר Restore ל-NuGet, ואז Build → Release.
+
+  הפרויקט אוסף אוטומטית את כל קבצי ה-.cs שבתיקייה (הדוגמה + שלנו).
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- V1 RAD Framework נבנה ל-.NET Framework. אם 4.7.2 לא מותקן, שנה ל-net48. -->
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>SecuritySystem_Crestron_SampleDriverModel_IP</AssemblyName>
+    <RootNamespace>SecuritySystem_Crestron_SampleDriverModel_IP</RootNamespace>
+    <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
+
+    <!-- יש כבר AssemblyInfo.cs בפרויקט — מונע כפילות attributes -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- פלט ישיר ל-bin\Release ללא תת-תיקיית framework -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <!-- רכיבי ה-SDK של Crestron (ציבוריים ב-nuget.org). DevKit מביא את כל
+       ה-RAD assemblies; ManifestUtil יוצר את ה-.pkg אוטומטית בסוף הבנייה. -->
+  <ItemGroup>
+    <PackageReference Include="Crestron.DeviceDrivers.DevKit" Version="28.*" />
+    <PackageReference Include="Crestron.DeviceDrivers.ManifestUtil" Version="28.*" />
+  </ItemGroup>
+
+  <!-- קובץ ההגדרות של הדרייבר חייב להיות מוטמע (embedded) -->
+  <ItemGroup>
+    <EmbeddedResource Include="DriverData.json" />
+  </ItemGroup>
+
+</Project>
